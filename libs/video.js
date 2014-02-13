@@ -92,8 +92,8 @@ video.prototype.error = function(msg){
 
 
 video.prototype.getTitle = function(){
-    this.on('vid',this.parseTitle);
-    this.parseVid();
+    this.on('vid',this.parseMetadata);
+    this.parse();
 }
 
 video.prototype.download = function(folder){
@@ -103,10 +103,10 @@ video.prototype.download = function(folder){
   this.folder = folder;
   this.on('vid',this.parseResource);
   this.on('validated',this.downloadResource);
-  this.parseVid();
+  this.parse();
 }
 
-video.prototype.parseVid = function(){
+video.prototype.parse = function(){
   if(this.vid){
     this.emit('vid');
   }else{
@@ -118,8 +118,8 @@ video.prototype.titleEnable = function(){
     return this.getLib().titleEnable;
 }
 
-video.prototype.parseTitle = function(){
-    this.getLib().parseTitle(this);
+video.prototype.parseMetadata = function(){
+    this.getLib().parseMetadata(this);
 }
 
 video.prototype.parseResource = function(){

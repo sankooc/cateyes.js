@@ -1,5 +1,6 @@
 var util = require('util');
 var hu = require('./httpUtil');
+var constans = require('./constans');
 
 var plist = 'http://v.youku.com/player/getPlayList/VideoIDS/';
 var TOKEN = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ/\\:._-1234567890";
@@ -88,7 +89,7 @@ exports.resolv = function(_v){
 };
 
 
-exports.parseTitle = function(_v){
+exports.parseMetadata = function(_v){
     var playlistUrl = plist + _v.vid;
     hu.getJson(playlistUrl,function(err,content){
         if(err){
@@ -100,6 +101,6 @@ exports.parseTitle = function(_v){
         profile.title = data.title;
         profile.provier ='youku';
         profile.types = data.streamtypes;
-        _v.emit('title',profile);
+        _v.emit(constans.metadataEvent,profile);
     });
 }

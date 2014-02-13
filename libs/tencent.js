@@ -45,7 +45,7 @@ function resolv(_v){
   });
 
 }
-exports.parseTitle = function(_v){
+exports.parseMetadata = function(_v){
 
     var plist = util.format(plistFormat,_v.vid);
     //console.log(plist);

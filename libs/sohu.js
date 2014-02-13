@@ -88,7 +88,7 @@ function getUrls(_v,clips,host,prot,suffixs,i){
 
 
 
-exports.parseTitle = function(_v){
+exports.parseMetadata = function(_v){
     var _url = _plist + _v.vid;
     hu.getJson(_url,function(err,content){
         if(err){
