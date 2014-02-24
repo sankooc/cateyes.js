@@ -11,8 +11,8 @@ var youku_reg = /^http:\/\/v.youku.com\/v_show\/id_([\w=]+).html$|^http:\/\/play
    ,sohu_reg = /v.sohu.com\//
    ,tencent_reg = /v.qq.com/
    ,v56_reg = /56.com/
-   ,yyt_reg = /www.yinyuetai.com/
-   ,leshi_reg = /letv.com/
+//   ,yyt_reg = /www.yinyuetai.com/
+//   ,leshi_reg = /letv.com/
    ,ku6_reg = /v.ku6.com/
 
 
@@ -21,9 +21,9 @@ function getProvider(_url){
   if(sohu_reg.test(_url)) return 'sohu';
   if(tencent_reg.test(_url)) return 'tencent';
   if(v56_reg.test(_url)) return 'v56';
-  if(leshi_reg.test(_url)) return 'letv';
+//  if(leshi_reg.test(_url)) return 'letv';
   if(ku6_reg.test(_url)) return 'ku6';
-  if(yyt_reg.test(_url)) return 'yyt';
+//  if(yyt_reg.test(_url)) return 'yyt';
 }
 
 function download(_url,quality,folder,title){
@@ -167,18 +167,15 @@ exports.getTitleByVid =function(provider,vid,cb){
 
 exports.getTitle =function(_url,cb){
     var _v = createVideoFromURL(_url);
-    if(!_v.provider){
-        return;
-    }
-//    if(!_v.titleEnable()){
-//        cb(false);
-//        return;
-//    }
     _v.on('error',function(msg){
         console.error(msg);
     }).on('title',function(profile){
        cb(true,profile);
     });
+    if(!_v.provider){
+        _v.error('cannot resolve provider');
+        return;
+    }
     _v.getTitle();
 };
 

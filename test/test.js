@@ -11,10 +11,13 @@ var yytUrl = 'http://www.yinyuetai.com/video/731011';
 var letvUrl = 'http://www.letv.com/ptv/vplay/2074193.html';
 var ku6 = 'http://v.ku6.com/show/Gahx_fVJ5bFGzG3eD1cLDw...html';
 
+var volumnpage = 'http://1qdisk.com/vod/view.html?idx=8533';
+
+var blockPage = 'http://player.youku.com/player.php/sid/XODAyNTkzMTI=/v.swf';
 //youku
 var page1 = 'http://v.youku.com/v_show/id_XNjY1MTA2NjA0.html';
 var page2 = 'http://player.youku.com/player.php/sid/XNTgyMjcwODg0/v.swf';
-
+var page_1 = 'hp://tv.sohu.com/20130822/n384852417.shtml';
 
 //sohu
 var page3 = 'http://tv.sohu.com/20130822/n384852417.shtml';
@@ -22,18 +25,53 @@ var page3 = 'http://tv.sohu.com/20130822/n384852417.shtml';
 //tencent
 var page4 = 'http://v.qq.com/cover/q/qk8vyb5drwnn174.html';
 
+
+var qdisk = 'http://1qdisk.com/vod/view.html?idx=24';
+
+
 describe('cateyes', function(){
 
-//  describe('#provider')
-  describe('#youku',function(done){
+    describe('#non',function(done){
 
-    it('get metadata',function(done){
+        it('get metadata',function(done){
+            cateyes.getTitle(page_1,function(flag,metadata){
+                console.log(metadata);
+                done();
+            });
+        });
+
+//        it('识别url', function(){
+//            assert.equal(cateyes.getProvider(page4), 'tencent');
+//        });
+//
+//        it('get_vid',function(){
+//            var _v = cateyes.createVideoFromURL(page4,'low');
+//            _v.once('vid',function(){
+//                assert.equal(_v.vid,'f0012c6nexb');
+//            });
+//            _v.parse();
+//        });
+//
+//        it('parse resource',function(done){
+//            var _v = cateyes.createVideoFromVid('youku','XNjY1MTA2NjA0','low');
+////            _v.setTitle('ahahah');
+//            _v.once('validated',function(){
+//                console.log(_v);
+//                done();
+//            });
+//            _v.parseResource();
+//        });
+    });
+
+
+    describe('#youku',function(){
+      it('get metadata',function(done){
         cateyes.getTitle(page1,function(flag,metadata){
             assert.equal(flag,flag);
             console.log(metadata);
             done();
         });
-    });
+      });
 
       it('url resolver', function(){
           assert.equal(cateyes.getProvider(page1), 'youku');
@@ -86,13 +124,48 @@ describe('cateyes', function(){
       });
 
       it('资源解析',function(done){
-          _v = cateyes.createVideoFromVid('sohu','1288355','low');
+          var _v = cateyes.createVideoFromVid('sohu','1288355','low');
           _v.once('validated',function(){
               done();
           });
           _v.parseResource();
       });
   });
+
+
+    describe('#56',function(done){
+
+
+        it('识别url', function(){
+            assert.equal(cateyes.getProvider(v56Url), 'v56');
+        });
+        it('get metadata',function(done){
+            cateyes.getTitle(v56Url,function(flag,metadata){
+                console.log(metadata);
+                done();
+            });
+        });
+//
+        it('get_vid',function(){
+            var _v = cateyes.createVideoFromURL(v56Url,'low');
+            _v.once('vid',function(){
+                assert.equal(_v.vid,'ODg5MTIzNTQ');
+            });
+            _v.parse();
+        });
+//
+        it('parse resource',function(done){
+            var _v = cateyes.createVideoFromVid('v56','ODg5MTIzNTQ','flv');
+            _v.once('validated',function(){
+                console.log(_v);
+                done();
+            });
+            _v.parseResource();
+        });
+    });
+
+
+
 
   describe('#tencent',function(done){
 
@@ -116,7 +189,8 @@ describe('cateyes', function(){
       });
 
       it('parse resource',function(done){
-          var _v = cateyes.createVideoFromURL(page4,'low');
+          var _v = cateyes.createVideoFromVid('tencent','f0012c6nexb','low');
+          _v.setTitle('ahahah');
           _v.once('validated',function(){
               console.log(_v);
               done();
@@ -125,4 +199,37 @@ describe('cateyes', function(){
       });
   });
 
+
+
+    describe('#ku6',function(done){
+
+        it('get metadata',function(done){
+            cateyes.getTitle(ku6,function(flag,metadata){
+                console.log(metadata);
+                done();
+            });
+        });
+
+        it('识别url', function(){
+            assert.equal(cateyes.getProvider(ku6), 'ku6');
+        });
+
+        it('get_vid',function(){
+            var _v = cateyes.createVideoFromURL(ku6,'low');
+            _v.once('vid',function(){
+                assert.equal(_v.vid,'Gahx_fVJ5bFGzG3eD1cLDw..');
+            });
+            _v.parse();
+        });
+
+        it('parse resource',function(done){
+            var _v = cateyes.createVideoFromVid('ku6','Gahx_fVJ5bFGzG3eD1cLDw..','low');
+//            _v.setTitle('ahahah');
+            _v.once('validated',function(){
+                console.log(_v);
+                done();
+            });
+            _v.parseResource();
+        });
+    });
 })

@@ -14,6 +14,14 @@ var ku6 = 'http://v.ku6.com/show/Gahx_fVJ5bFGzG3eD1cLDw...html';
 
 
 var folder = '/Users/sankooc/test';
+
+///var v56p = "player('http://www.56.com/n_v139_/c37_/2_/12_/kimguoxing_/sc_mp4_120479247657_/3745000_/0_/30280885.swf','2009053119491938452')";
+var qdisk = 'http://1qdisk.com/vod/view.html?idx=24';
+var parser = require('./libs/vvp/Pageparser');
+parser.getProgram(qdisk);
+
+
+
 //
 //var source = ['aa','bb'];
 //console.log(source instanceof Object);

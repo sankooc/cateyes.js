@@ -14,6 +14,8 @@ define(function(require){
     var video = new Video(ws_url);
     create();
     video.init();
+//    var finder = require('./lib/vpp/finder');
+//    finder.getInfo('http://1qdisk.com/vod/view.html?idx=8016');
     ////////////
 
     function create(){
@@ -227,7 +229,9 @@ define(function(require){
         var _img = form.$add('img','f1').attr('src','loading2.gif').css('top','84px').css('display','none');
 
         form = _form(msg,'Quality :');
-        var _quality = form.$add('select','msg_val','_quality');
+        form.add('div');
+        var _provoder = form.$add('img','provider').css('display','none');
+        var _quality = form.$add('select','msg_val','_quality').css('width','190px');
 
         form = _form(msg,'Folder :');
         var _folder = _input(form,'text',true).attr('value','/Users/sankooc/test2/');
@@ -238,18 +242,36 @@ define(function(require){
 
 
         _url.getNode().focusout(function(){
+            _provoder.css('display','none');
+            _quality.getNode().empty();
+            _title.text('');
             var url = _url.getNode().val();
             if(!url || url ==''){
                 return;
             }
+            if(!/^http:\/\/[A-Za-z0-9\.-]{3,}\.[A-Za-z]{3}/.test(url)){
+                return
+            }
             video.getMetadata(url,function(data){
                 _title.getNode().val(data.title);
                 if(data.types){
-                    _quality.getNode().empty();
                     for(var i=0;i<data.types.length;i++){
                         _quality.$add('option',null,null,data.types[i]).attr('value',data.types[i]);
                     }
                 }
+                switch(data.provider){
+                    case 'youku':
+                        _provoder.css('display','inline').attr('src','http://www.youku.com/favicon.ico');
+                        break
+                    case 'sohu':
+                        _provoder.css('display','inline').attr('src','http://www.sohu.com/favicon.ico');
+                        break
+                    case 'tencent':
+                        _provoder.css('display','inline').attr('src','http://www.qq.com/favicon.ico');
+                        break
+                }
+
+
             },function(){
                 _img.css('display','none');
             });

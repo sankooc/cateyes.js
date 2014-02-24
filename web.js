@@ -81,34 +81,11 @@ http.createServer(function(req,res){
 //    console.log('action : %s',action);
     switch(path){
         case '/metadata':
-//            var param = path.substring(index+1);
-            if(query.url){
-                cateyes.getTitle(query.url,function(flag,profile){
-//                    if(!flag){
-//                        console.error('no title');
-//                        res.writeHead(200);
-//                        res.end();
-//                        return;
-//                    }
-                    var ret = JSON.stringify(profile);
-                    res.writeHead(200, {
-                        'Content-Length': Buffer.byteLength(ret,'utf-8'),
-                        'Content-Type': 'application/json' });
-                    res.write(ret);
-                    res.end();
-                })
-            }else if(query.vid && query.provider){
-                console.log('provider:%s vid:%s',query.provider,query.vid);
-                cateyes.getTitleByVid(query.provider,query.vid,function(flag,profile){
-                    var ret = JSON.stringify(profile);
-                    res.writeHead(200, {
-                        'Content-Length': Buffer.byteLength(ret,'utf-8'),
-                        'Content-Type': 'application/json' });
-                    res.write(ret);
-                    res.end();
-                })
+            try{
+                handleMetadata(query,res);
+            }catch(e){
+             console.error(e);
             }
-
             break;
         case '/video':
             if('transfer-encoding' in req.headers || 'content-length' in req.headers){
@@ -142,6 +119,32 @@ http.createServer(function(req,res){
     }
     }
 }).listen(8080);
+
+
+function handleMetadata(query,res){
+    if(query.url){
+        cateyes.getTitle(query.url,function(flag,profile){
+            var ret = JSON.stringify(profile);
+            res.writeHead(200, {
+                'Content-Length': Buffer.byteLength(ret,'utf-8'),
+                'Content-Type': 'application/json' });
+            res.write(ret);
+            res.end();
+        })
+    }else if(query.vid && query.provider){
+        console.log('provider:%s vid:%s',query.provider,query.vid);
+        cateyes.getTitleByVid(query.provider,query.vid,function(flag,profile){
+            var ret = JSON.stringify(profile);
+            res.writeHead(200, {
+                'Content-Length': Buffer.byteLength(ret,'utf-8'),
+                'Content-Type': 'application/json' });
+            res.write(ret);
+            res.end();
+        })
+    }
+}
+
+
 
 console.log('http-server is running');
 

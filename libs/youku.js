@@ -36,12 +36,21 @@ function getMixString(seed) {
 
 function getSourceUrl(content,_v){
   try{
-    var data = content.data[0];
-    var title = data.title,seed = data.seed,types = data.streamtypes,type = types[0];
+      var data = content.data[0];
+      if(!data){
+          _v.error('cannot get Metadata');
+          return;
+      }
+      if(data.error){
+          _v.error(data.error);
+          return;
+      }
+      var title = data.title,seed = data.seed,types = data.streamtypes,type = types[0];
 
     if(!_v.title){
         _v.title = title;
     }
+
     if(('high' == _v.quality || 'mp4' == _v.quality) && types.length > 1){
       type = 'mp4';
     }else{
@@ -97,9 +106,17 @@ exports.parseMetadata = function(_v){
             return;
         }
         var data = content.data[0];
+        if(!data){
+            _v.error('cannot get Metadata');
+            return;
+        }
+        if(data.error){
+            _v.error(data.error);
+            return;
+        }
         var profile = {};
         profile.title = data.title;
-        profile.provier ='youku';
+        profile.provider ='youku';
         profile.types = data.streamtypes;
         _v.emit(constans.metadataEvent,profile);
     });

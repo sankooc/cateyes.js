@@ -12,6 +12,7 @@ var urlFormat2 = '%s%s?key=%s';
 function getVid(_v){
   hu.getText(_v.orignalUrl,'utf-8',function(err,content){
     if(err){
+        _v.error(err);
       return;
     }
     var vid = content.replace(vid_reg,'$1');
@@ -99,7 +100,7 @@ exports.parseMetadata = function(_v){
            ,title = data.tvName;
         var profile = {};
         profile.title = title;
-        profile.provier ='sohu';
+        profile.provider ='sohu';
         profile.types = ['mp4'];
         _v.emit('title',profile);
     });

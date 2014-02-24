@@ -107,11 +107,15 @@ video.prototype.download = function(folder){
 }
 
 video.prototype.parse = function(){
-  if(this.vid){
-    this.emit('vid');
-  }else{
-    this.getLib().getVid(this);
-  }
+    try{
+        if(this.vid){
+            this.emit('vid');
+        }else{
+            this.getLib().getVid(this);
+        }
+    }catch(err){
+        this.error(err);
+    }
 }
 
 video.prototype.titleEnable = function(){

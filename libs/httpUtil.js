@@ -12,7 +12,8 @@ function getText(url,charset,callback){
     switch(res.statusCode){
       case 200:
         break;
-      case 301:
+        case 301:
+//        case 302:
         var location = res.headers['location'];
 	    console.log('redirect to %s',location);
         req.abort();

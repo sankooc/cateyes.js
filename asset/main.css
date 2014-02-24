@@ -47,7 +47,7 @@ body
     box-shadow: inset 3px 0px 10px rgba(0,0,0,0.1);
 }
 
-nav.navigator
+.navigator
 {
     width:65em;
     height: 50px;
@@ -70,7 +70,7 @@ nav div {
     margin: 1px 10px 1px 0px;
     display: inline;
 }
-div.main
+.main
 {
     background-image: url(bk.jpg);
     width: 1004px;
@@ -80,12 +80,12 @@ div.main
     clear: both;
     border: 1px solid #c0c0c0;
 }
-div.main div.data
+.data
 {
     width: 700px;
     height: 500px;
-    padding: 0px;
     margin:0;
+    padding : 0;
     border: 3px solid #56803d;
     border-radius: 10px;
     float: right;
@@ -147,7 +147,7 @@ div.main div.data
 
 
 
-div.main div.list
+.list
 {
     margin: 0;
     width:270px;
@@ -160,13 +160,13 @@ div.main div.list
     float: left;
     padding: 0 10px 0 10px;
 }
-div.list ul
+.list ul
 {
     padding: 0 0px 0 0px;
     margin-top:0;
     border:2px solid #56803d;
 }
-div.list ul li
+.list li
 {
     margin: 5px 5px;
     overflow: hidden;
@@ -175,11 +175,11 @@ div.list ul li
     border: 1px solid #56803d;
     padding:2px 2px;
 }
-div.list ul li a
+.list a
 {
     width:100px;
 }
-div.list ul li div
+.list div
 {
     display:inline;
     font-family: Helvetica, sans-serif;
@@ -188,13 +188,13 @@ div.list ul li div
     float: right;
     cursor:pointer;
 }
-div.list ul li:hover
+.list li:hover
 {
     cursor:pointer;
     background-color: #ff974c;
 }
 
-div.list h4
+.list h4
 {
     height: 30px;
     line-height: 33px;
@@ -216,11 +216,9 @@ nav a
     background-color: #56803d;
     padding:0.2em 0.6em;
 }
-nav ul li a:hover
+nav a:hover
 {
     color:black;
-
-
     animation:incr 1s;
     -moz-animation:incr 1s;
     -webkit-animation:incr 1s;
@@ -228,17 +226,23 @@ nav ul li a:hover
     background-color: #ff974c;
     cursor:pointer;
 }
-nav ul li
+nav li
 {
     display:inline;
 }
 
-img.f1
+.f1
 {
     left: 345px;
     position: absolute;
 }
 
+.provider
+{
+    width: 18px;
+    height: 18px;
+    margin-left: 5px;
+}
 .list-img
 {
     float:left;
@@ -251,7 +255,7 @@ img.f1
     /*width:500px;*/
     /*height:400px;*/
     /*border: 1px solid #c0c0c0;*/
-    margin:0px auto;
+    margin:10px 10px;
 }
 
 .key
@@ -342,7 +346,8 @@ img.f1
     font-weight: bold;
     font-size: 14px;
     text-shadow: 0px 0px 10px rgba(0,0,0,0.2);
-    width:100px;
+
+    width:80px;
     float:left;
     height : 23px;
     margin-bottom: 7px;
