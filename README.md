@@ -12,3 +12,7 @@ npm install xmldom
 ```
 npm install xpath.js
 ```
+### Run
+```
+node web
+```
