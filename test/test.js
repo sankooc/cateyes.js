@@ -59,40 +59,59 @@ describe('cateyes', function(){
   });
 
 
+    describe('#Sohu',function(){
+        it('url resolver', function(){
+            assert.equal(cateyes.getProvider(page3), 'sohu');
+        });
+        it('sohu metadata',function(done){
+            cateyes.getURLMetadata(page3).then(function(data){
+                console.log(data);
+                done();
+                describe('#sohu resource',function(){
+                    it('parse resource',function(done){
+                        var rep ={
+                            'metadata':data,
+                            'parameter':{'type':'mp4'}};
+                        cateyes.getResource(rep).then(function(_v){
+                            console.log(rep);
+                            done();
+                        },function(err){
+                            console.error(err);
+                            done(err);
+                        });
+                    });
+                })
+            });
 
-//  describe('#Sohu', function(){
-//      it('get metadata',function(done){
-//          cateyes.getTitle(page3,function(flag,metadata){
-//              console.log(metadata);
-//              done();
-//          });
-//      });
-//
-//      it('识别url', function(){
-//          assert.equal(cateyes.getProvider(page3), 'sohu');
-//      });
-//
-//
-//      it('取vid',function(done){
-//          var _v = cateyes.createVideoFromURL(page3,'low');
-//          _v.once('vid',function(){
-//              if('1288355' != _v.vid){
-//                  done('vid incorrect '+content);
-//              }else{
-//                  done();
-//              }
-//          });
-//          _v.parse();
-//      });
-//
-//      it('资源解析',function(done){
-//          var _v = cateyes.createVideoFromVid('sohu','1288355','low');
-//          _v.once('validated',function(){
-//              done();
-//          });
-//          _v.parseResource();
-//      });
-//  });
+        });
+    });
+
+    describe('#Tencent',function(){
+        it('url resolver', function(){
+            assert.equal(cateyes.getProvider(tencentUrl), 'tencent');
+        });
+        it('sohu metadata',function(done){
+            cateyes.getURLMetadata(tencentUrl).then(function(data){
+                console.log(data);
+                done();
+                describe('#tecent resource',function(){
+                    it('parse resource',function(done){
+                        var rep ={
+                            'metadata':data,
+                            'parameter':{'type':'mp4','title':'fortest'}};
+                        cateyes.getResource(rep).then(function(_v){
+                            console.log(rep);
+                            done();
+                        });
+                    });
+                })
+            });
+
+        });
+    });
+
+
+
 //
 //
 //    describe('#56',function(done){

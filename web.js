@@ -7,13 +7,16 @@ var http = require('http')
     ,mime = require('mime')
     ,cateyes = require('./cateyes')
 
-
-console.log(__dirname);
 var express = require('express');
 var app = express();
-app.use(express.bodyParser());
-app.use(express.methodOverride());
+
+app.set('port', process.env.PORT || 8080);
 app.use(app.router);
+app.use(express.logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(express.methodOverride());
+
 app.use('/asset',express.static(__dirname + '/asset'));
 app.use(function(err, req, res, next){
     console.error(err.stack);
@@ -50,187 +53,6 @@ app.get('/video',function(req,res){
     }
 });
 
-app.listen(8080);
-
-
-
-//var ROOT = '/Users/sankooc/repo/git/cateyes.js/';
-////load favicon
-//var favicon;
-//fs.readFile(ROOT+'/asset/favicon.ico',function(err,file){
-//    if(!err)
-//       favicon = file;
-//});
-//
-//
-//
-//var eye = new eyes();
-//
-//
-//function reLocation(req,res){
-//    var location = 'http://'+req.headers.host+'/asset/main.html';
-//    res.writeHead(301,{'Location':location});
-//    res.end();
-//}
-//
-//function page404(req,res){
-//    var path = ROOT+'/asset/404.html';
-//    fs.readFile(path,function(err,file){
-//        if(err){
-//            res.writeHead(501);
-//            res.end();
-//            return;
-//        }
-//        res.writeHead(404);
-//        res.end(file);
-//    });
-//}
-//http.createServer(function(req,res){
-//    var path = url.parse(req.url).pathname;
-//    var query = url.parse(req.url,true).query;
-//    if(path == '/favicon.ico'){
-//        res.writeHead(200,{'content-type':'image/x-icon'});
-//        res.end(favicon);
-//        return;
-//    }
-//    var inx = path.indexOf('asset');
-//    if(inx > -1){
-//        path = ROOT+path;
-//        if(fs.existsSync(path)){
-//            fs.readFile(path,function(err,file){
-//                if(err){
-//                    res.writeHead(404);
-//                    res.end();
-//                    return;
-//                }
-//                var type  = mime.lookup(path);
-//                if(type){
-//                    res.setHeader('Content-Type',type);
-//
-//                }
-//                res.writeHead(200);
-//                res.end(file);
-//                return;
-//            });
-//        }else{
-//            page404(req,res);
-//        }
-//    }else{
-//    var index = path.indexOf('/',1);
-////    if(-1 == index){
-////        reLocation(req,res);
-////        return;
-////    }
-//    var action = path.substring(1,index);
-//
-////    console.log('action : %s',action);
-//    switch(path){
-//        case '/metadata':
-//            try{
-//                handleMetadata(query,res);
-//            }catch(e){
-//             console.error(e);
-//            }
-//            break;
-//        case '/video':
-//            if('transfer-encoding' in req.headers || 'content-length' in req.headers){
-//                var buf = '';
-//                req.setEncoding('utf-8');
-//                req.on('data',function(chunk){
-//                    buf+=chunk;
-//                }).on('end',function(){
-//                    var raw = JSON.parse(buf)
-//                       ,_url = raw.url
-//                       ,_provider = raw.provider
-//                       ,_vid = raw.vid
-//                       ,_quality = raw.quality
-//                       ,_folder = raw.folder
-//                       ,_title = raw.title
-//                    console.log('quality : %s title : %s folder : %s',_quality,_title,_folder);
-//                    if(_url){
-//                        eye.addVideo(_url,_quality,_folder,_title);
-//                        res.writeHead(200);
-//                        res.end();
-//                    }else if(_provider && _vid){
-//                        eye.addVideoByVid(_provider,_vid,_quality,_folder,_title);
-//                        res.writeHead(200);
-//                        res.end();
-//                    }
-//                })
-//            }
-//            break;
-//        default:
-//            page404(req,res);
-//    }
-//    }
-//}).listen(8080);
-//
-//
-//function handleMetadata(query,res){
-//    if(query.url){
-//        cateyes.getTitle(query.url,function(flag,profile){
-//            var ret = JSON.stringify(profile);
-//            res.writeHead(200, {
-//                'Content-Length': Buffer.byteLength(ret,'utf-8'),
-//                'Content-Type': 'application/json' });
-//            res.write(ret);
-//            res.end();
-//        })
-//    }else if(query.vid && query.provider){
-//        console.log('provider:%s vid:%s',query.provider,query.vid);
-//        cateyes.getTitleByVid(query.provider,query.vid,function(flag,profile){
-//            var ret = JSON.stringify(profile);
-//            res.writeHead(200, {
-//                'Content-Length': Buffer.byteLength(ret,'utf-8'),
-//                'Content-Type': 'application/json' });
-//            res.write(ret);
-//            res.end();
-//        })
-//    }
-//}
-//
-//
-//
-//console.log('http-server is running');
-//
-//
-//var WebSocketServer = require('ws').Server
-//    , wss = new WebSocketServer({port: 8081});
-//
-//wss.on('connection', function(ws) {
-//    console.log('connected');
-//    var videos = eye.getVideos();
-//    var handler = function(video){
-//        ws.send('{"key":"+video","val":"'+video.title+'"}');
-//    };
-//    for(var i = 0 ;i<videos.length;i++){
-//        handler(videos[i]);
-//    }
-//
-//    eye.on('add',handler);
-//
-//    var m = new monitor(ws);
-//    ws.on('message', function(title) {
-//        console.log('ws message %s',title);
-//        m.off();
-//        var video;
-//        for(var i = 0 ;i<videos.length;i++){
-//            if(videos[i].title == title){
-//                video = videos[i];
-//                break;
-//            }
-//        }
-//        if(!video){
-//            return;
-//        }
-//        m.on(video);
-//    });
-//
-//    ws.on('close',function(){
-//        console.log('socket closed');
-//        eye.removeListener('add',handler);
-//        m.close();
-//    });
-//});
-
-//console.log('websocket-server is running');
+http.createServer(app).listen(app.get('port'), function(){
+    console.log('server started on' + app.get('port'));
+});

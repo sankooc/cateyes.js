@@ -33,61 +33,6 @@ function getMixString(seed) {
 	}
 	return ret;
 }
-
-
-function _parseMetadata(content,_v){
-      var data = content.data[0];
-      if(!data){
-          _v.error('cannot get Metadata');
-          return;
-      }
-      if(data.error){
-          _v.error(data.error);
-          return;
-      }
-      _v.metadata.title = data.title;
-      _v.metadata.types = data.streamtypes;
-      _v.next = function(){
-          var seed = data.seed,type = 'mp4' == _v.parameter.type?'mp4':'flv';
-          var streamFileids = data.streamfileids[type];
-          if(!streamFileids){
-              this.error('no types');
-              return;
-          }
-          var ids = streamFileids.split('*'),mstr = getMixString(seed),tmp = [],i;
-          for(i=0;i<ids.length;i++){
-              tmp[i] = mstr[parseInt(ids[i])];
-          }
-          var id = tmp.join('') , id_pre = id.slice(0, 8) , id_end = id.slice(10);
-          this.setSuffix('.'+type);
-          this.setCount(data.segs[type].length);
-          for(i =0;i<data.segs[type].length;i++){
-              var seg = data.segs[type][i],no = '0'+parseInt(seg.no).toString(16);
-              this.addUrl(i,util.format(url_format,getSerialId(),no,type,id_pre,no.toUpperCase(),id_end,seg.k,seg.seconds));
-          }
-      }
-    _v.emit('metadata');
-}
-
-
-function resolve(_v){
-    if(_v.metadata.vid){
-        var playlistUrl = plist + _v.metadata.vid;
-        hu.getJson(playlistUrl,function(err,content){
-            if(err){
-                _v.error(err.tostring());
-                return;
-            }
-            _parseMetadata(content,_v);
-        });
-    }else{
-        var _url = _v.url;
-        var vid = _url.replace(youku_reg,'$1$2');
-        _v.setVid(vid);
-        resolve(_v);
-    }
-}
-
 function _isURL(_url){
     return true;
 }
@@ -166,5 +111,3 @@ exports.parseMetadata = function(_url){
         return deferred.promise;
     }
 }
-
-exports.resolve = resolve;
