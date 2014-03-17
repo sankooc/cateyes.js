@@ -166,3 +166,5 @@ target/
 *.iml
 #node.js
 node_modules
+.settings
+.c9revisions

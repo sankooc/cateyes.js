@@ -1,6 +1,7 @@
 var assert = require("assert");
 var cateyes = require('../cateyes');
 var sohu = require('../libs/sohu');
+var video = require('../libs/video');
 var constans = require('../libs/constans');
 
 var sohuSurl = 'http://tv.sohu.com/20140119/n393765790.shtml';
@@ -31,29 +32,160 @@ var qdisk = 'http://1qdisk.com/vod/view.html?idx=24';
 
 describe('cateyes', function(){
 
-    describe('#non',function(done){
 
-        it('get metadata',function(done){
-            cateyes.getTitle(page_1,function(flag,metadata){
-                console.log(metadata);
-                done();
-            });
+    describe('#youku',function(){
+        it('url resolver', function(){
+          assert.equal(cateyes.getProvider(page1), 'youku');
+          assert.equal(cateyes.getProvider(page2), 'youku');
         });
+        it('get metadata',function(done){
+            cateyes.getURLMetadata(page1).then(function(data){
+                console.log(data);
+                done();
+                describe('#resource',function(){
+                    it('parse resource',function(done){
+                        var rep ={
+                            'metadata':data,
+                            'parameter':{'type':'flv'}};
+                        cateyes.getResource(rep).then(function(_v){
+                            console.log(rep);
+                            done();
+                        });
+                    });
+                })
+            });
 
+        });
+  });
+
+
+
+//  describe('#Sohu', function(){
+//      it('get metadata',function(done){
+//          cateyes.getTitle(page3,function(flag,metadata){
+//              console.log(metadata);
+//              done();
+//          });
+//      });
+//
+//      it('识别url', function(){
+//          assert.equal(cateyes.getProvider(page3), 'sohu');
+//      });
+//
+//
+//      it('取vid',function(done){
+//          var _v = cateyes.createVideoFromURL(page3,'low');
+//          _v.once('vid',function(){
+//              if('1288355' != _v.vid){
+//                  done('vid incorrect '+content);
+//              }else{
+//                  done();
+//              }
+//          });
+//          _v.parse();
+//      });
+//
+//      it('资源解析',function(done){
+//          var _v = cateyes.createVideoFromVid('sohu','1288355','low');
+//          _v.once('validated',function(){
+//              done();
+//          });
+//          _v.parseResource();
+//      });
+//  });
+//
+//
+//    describe('#56',function(done){
+//
+//
 //        it('识别url', function(){
-//            assert.equal(cateyes.getProvider(page4), 'tencent');
+//            assert.equal(cateyes.getProvider(v56Url), 'v56');
+//        });
+//        it('get metadata',function(done){
+//            cateyes.getTitle(v56Url,function(flag,metadata){
+//                console.log(metadata);
+//                done();
+//            });
+//        });
+////
+//        it('get_vid',function(){
+//            var _v = cateyes.createVideoFromURL(v56Url,'low');
+//            _v.once('vid',function(){
+//                assert.equal(_v.vid,'ODg5MTIzNTQ');
+//            });
+//            _v.parse();
+//        });
+////
+//        it('parse resource',function(done){
+//            var _v = cateyes.createVideoFromVid('v56','ODg5MTIzNTQ','flv');
+//            _v.once('validated',function(){
+//                console.log(_v);
+//                done();
+//            });
+//            _v.parseResource();
+//        });
+//    });
+//
+//
+//
+//
+//  describe('#tencent',function(done){
+//
+//      it('get metadata',function(done){
+//          cateyes.getTitle(page4,function(flag,metadata){
+//              console.log(metadata);
+//              done();
+//          });
+//      });
+//
+//      it('识别url', function(){
+//          assert.equal(cateyes.getProvider(page4), 'tencent');
+//      });
+//
+//      it('get_vid',function(){
+//      var _v = cateyes.createVideoFromURL(page4,'low');
+//          _v.once('vid',function(){
+//              assert.equal(_v.vid,'f0012c6nexb');
+//          });
+//        _v.parse();
+//      });
+//
+//      it('parse resource',function(done){
+//          var _v = cateyes.createVideoFromVid('tencent','f0012c6nexb','low');
+//          _v.setTitle('ahahah');
+//          _v.once('validated',function(){
+//              console.log(_v);
+//              done();
+//          });
+//          _v.parseResource();
+//      });
+//  });
+//
+//
+//
+//    describe('#ku6',function(done){
+//
+//        it('get metadata',function(done){
+//            cateyes.getTitle(ku6,function(flag,metadata){
+//                console.log(metadata);
+//                done();
+//            });
+//        });
+//
+//        it('识别url', function(){
+//            assert.equal(cateyes.getProvider(ku6), 'ku6');
 //        });
 //
 //        it('get_vid',function(){
-//            var _v = cateyes.createVideoFromURL(page4,'low');
+//            var _v = cateyes.createVideoFromURL(ku6,'low');
 //            _v.once('vid',function(){
-//                assert.equal(_v.vid,'f0012c6nexb');
+//                assert.equal(_v.vid,'Gahx_fVJ5bFGzG3eD1cLDw..');
 //            });
 //            _v.parse();
 //        });
 //
 //        it('parse resource',function(done){
-//            var _v = cateyes.createVideoFromVid('youku','XNjY1MTA2NjA0','low');
+//            var _v = cateyes.createVideoFromVid('ku6','Gahx_fVJ5bFGzG3eD1cLDw..','low');
 ////            _v.setTitle('ahahah');
 //            _v.once('validated',function(){
 //                console.log(_v);
@@ -61,175 +193,5 @@ describe('cateyes', function(){
 //            });
 //            _v.parseResource();
 //        });
-    });
-
-
-    describe('#youku',function(){
-      it('get metadata',function(done){
-        cateyes.getTitle(page1,function(flag,metadata){
-            assert.equal(flag,flag);
-            console.log(metadata);
-            done();
-        });
-      });
-
-      it('url resolver', function(){
-          assert.equal(cateyes.getProvider(page1), 'youku');
-          assert.equal(cateyes.getProvider(page2), 'youku');
-      });
-
-      it('get_vid',function(){
-          var _v = cateyes.createVideoFromURL(page1,'high');
-          _v.once('vid',function(){
-              assert.equal(_v.vid,'XNjY1MTA2NjA0');
-          });
-          _v.parse();
-      });
-
-      it('parse resource',function(done){
-          var _v = cateyes.createVideoFromVid('youku','XNjY1MTA2NjA0','mp4');
-          _v.once('validated',function(){
-              console.log(_v);
-              done();
-          });
-          _v.parseResource();
-      });
-  });
-
-
-
-  describe('#Sohu', function(){
-      it('get metadata',function(done){
-          cateyes.getTitle(page3,function(flag,metadata){
-              console.log(metadata);
-              done();
-          });
-      });
-
-      it('识别url', function(){
-          assert.equal(cateyes.getProvider(page3), 'sohu');
-      });
-
-
-      it('取vid',function(done){
-          var _v = cateyes.createVideoFromURL(page3,'low');
-          _v.once('vid',function(){
-              if('1288355' != _v.vid){
-                  done('vid incorrect '+content);
-              }else{
-                  done();
-              }
-          });
-          _v.parse();
-      });
-
-      it('资源解析',function(done){
-          var _v = cateyes.createVideoFromVid('sohu','1288355','low');
-          _v.once('validated',function(){
-              done();
-          });
-          _v.parseResource();
-      });
-  });
-
-
-    describe('#56',function(done){
-
-
-        it('识别url', function(){
-            assert.equal(cateyes.getProvider(v56Url), 'v56');
-        });
-        it('get metadata',function(done){
-            cateyes.getTitle(v56Url,function(flag,metadata){
-                console.log(metadata);
-                done();
-            });
-        });
-//
-        it('get_vid',function(){
-            var _v = cateyes.createVideoFromURL(v56Url,'low');
-            _v.once('vid',function(){
-                assert.equal(_v.vid,'ODg5MTIzNTQ');
-            });
-            _v.parse();
-        });
-//
-        it('parse resource',function(done){
-            var _v = cateyes.createVideoFromVid('v56','ODg5MTIzNTQ','flv');
-            _v.once('validated',function(){
-                console.log(_v);
-                done();
-            });
-            _v.parseResource();
-        });
-    });
-
-
-
-
-  describe('#tencent',function(done){
-
-      it('get metadata',function(done){
-          cateyes.getTitle(page4,function(flag,metadata){
-              console.log(metadata);
-              done();
-          });
-      });
-
-      it('识别url', function(){
-          assert.equal(cateyes.getProvider(page4), 'tencent');
-      });
-
-      it('get_vid',function(){
-      var _v = cateyes.createVideoFromURL(page4,'low');
-          _v.once('vid',function(){
-              assert.equal(_v.vid,'f0012c6nexb');
-          });
-        _v.parse();
-      });
-
-      it('parse resource',function(done){
-          var _v = cateyes.createVideoFromVid('tencent','f0012c6nexb','low');
-          _v.setTitle('ahahah');
-          _v.once('validated',function(){
-              console.log(_v);
-              done();
-          });
-          _v.parseResource();
-      });
-  });
-
-
-
-    describe('#ku6',function(done){
-
-        it('get metadata',function(done){
-            cateyes.getTitle(ku6,function(flag,metadata){
-                console.log(metadata);
-                done();
-            });
-        });
-
-        it('识别url', function(){
-            assert.equal(cateyes.getProvider(ku6), 'ku6');
-        });
-
-        it('get_vid',function(){
-            var _v = cateyes.createVideoFromURL(ku6,'low');
-            _v.once('vid',function(){
-                assert.equal(_v.vid,'Gahx_fVJ5bFGzG3eD1cLDw..');
-            });
-            _v.parse();
-        });
-
-        it('parse resource',function(done){
-            var _v = cateyes.createVideoFromVid('ku6','Gahx_fVJ5bFGzG3eD1cLDw..','low');
-//            _v.setTitle('ahahah');
-            _v.once('validated',function(){
-                console.log(_v);
-                done();
-            });
-            _v.parseResource();
-        });
-    });
+//    });
 })

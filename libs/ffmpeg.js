@@ -1,24 +1,26 @@
 var exec = require('child_process').exec;
 var fs = require('fs');
 
-exports.concat = function(resources,folder){
+exports.concat = function(resource){
   //_concat1(resources);
 
-  _concat2(resources,folder);
+  _concat2(resource);
 }
 /*
 UNIX 操作系统
 */
-function _concat2(resources,folder){
+function _concat2(resource){
+    var folder = resource.report.parameter.folder;
+    var title = resource.getTitle();
   var cmd = '';
-  var _folder =getCString(folder+resources.title+'/'),mFile = _folder+'merge.txt';
-  cmd += 'printf \"file \'%s\' \\n \" '+_folder+'*'+resources.suffix+' > '+ mFile;
-  cmd += ' && ffmpeg -f concat -i '+ mFile +' -c copy '+getCString(folder+resources.title+resources.suffix);
+  var _folder =getCString(folder+title+'/'),mFile = _folder+'merge.txt';
+  cmd += 'printf \"file \'%s\' \\n \" '+_folder+'*.'+resource.getSuffix()+' > '+ mFile;
+  cmd += ' && ffmpeg -f concat -i '+ mFile +' -c copy '+getCString(resource.getTarget());
   cmd += ' && rm -f '+ mFile;
   console.log(cmd);
   var obj = exec(cmd);
   obj.on('exit',function(){
-    console.log('concat %s complete',resources.title);
+    console.log('concat %s complete',resource.getTitle());
   });
 }
 

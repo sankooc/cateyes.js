@@ -1,11 +1,12 @@
 var util = require('util');
 var hu = require('./httpUtil');
 var constans = require('./constans');
-
+var defer = require("node-promise").defer;
+var video = require('./video');
 var plist = 'http://v.youku.com/player/getPlayList/VideoIDS/';
 var TOKEN = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ/\\:._-1234567890";
 var url_format = 'http://f.youku.com/player/getFlvPath/sid/%s_%s/st/%s/fileid/%s%s%s?K=%s&ts=%s';
-var youku_reg = /^http:\/\/v.youku.com\/v_show\/id_([\w=]+).html$|^http:\/\/player.youku.com\/player.php\/sid\/([\w=]+)\/v.swf$/;
+var youku_reg = /^http:\/\/v.youku.com\/v_show\/id_([\w=]+).html|^http:\/\/player.youku.com\/player.php\/sid\/([\w=]+)\/v.swf$/;
 exports.regex=youku_reg;
 
 function getRandom(seed,weight){
@@ -34,8 +35,7 @@ function getMixString(seed) {
 }
 
 
-function getSourceUrl(content,_v){
-  try{
+function _parseMetadata(content,_v){
       var data = content.data[0];
       if(!data){
           _v.error('cannot get Metadata');
@@ -45,79 +45,126 @@ function getSourceUrl(content,_v){
           _v.error(data.error);
           return;
       }
-      var title = data.title,seed = data.seed,types = data.streamtypes,type = types[0];
-
-    if(!_v.title){
-        _v.title = title;
-    }
-
-    if(('high' == _v.quality || 'mp4' == _v.quality) && types.length > 1){
-      type = 'mp4';
-    }else{
-      type = 'flv';
-    }
-
-    var streamFileids = data.streamfileids[type];
-    if(!streamFileids){
-      return;
-    }
-    var ids = streamFileids.split('*'),mstr = getMixString(seed),tmp = [],i;
-    for(i=0;i<ids.length;i++){
-      tmp[i] = mstr[parseInt(ids[i])];
-    }
-    var id = tmp.join('') , id_pre = id.slice(0, 8) , id_end = id.slice(10);
-    _v.setSuffix('.'+type);
-    _v.setCount(data.segs[type].length);
-    for(i =0;i<_v.count;i++){
-      var seg = data.segs[type][i],no = '0'+parseInt(seg.no).toString(16);
-      _v.addUrl(i,util.format(url_format,getSerialId(),no,type,id_pre,no.toUpperCase(),id_end,seg.k,seg.seconds));
-    }
-  }catch(e){
-    console.error(e);
-  }
+      _v.metadata.title = data.title;
+      _v.metadata.types = data.streamtypes;
+      _v.next = function(){
+          var seed = data.seed,type = 'mp4' == _v.parameter.type?'mp4':'flv';
+          var streamFileids = data.streamfileids[type];
+          if(!streamFileids){
+              this.error('no types');
+              return;
+          }
+          var ids = streamFileids.split('*'),mstr = getMixString(seed),tmp = [],i;
+          for(i=0;i<ids.length;i++){
+              tmp[i] = mstr[parseInt(ids[i])];
+          }
+          var id = tmp.join('') , id_pre = id.slice(0, 8) , id_end = id.slice(10);
+          this.setSuffix('.'+type);
+          this.setCount(data.segs[type].length);
+          for(i =0;i<data.segs[type].length;i++){
+              var seg = data.segs[type][i],no = '0'+parseInt(seg.no).toString(16);
+              this.addUrl(i,util.format(url_format,getSerialId(),no,type,id_pre,no.toUpperCase(),id_end,seg.k,seg.seconds));
+          }
+      }
+    _v.emit('metadata');
 }
 
 
-exports.titleEnable = true;
-
-exports.getVid = function(_v){
-  var _url = _v.orignalUrl;
-  var vid = _url.replace(youku_reg,'$1$2');
-  _v.setVid(vid);
-};
-
-exports.resolv = function(_v){
-  var playlistUrl = plist + _v.vid;
-  hu.getJson(playlistUrl,function(err,content){
-    if(err){
-      _v.error(err.tostring());
-      return;
+function resolve(_v){
+    if(_v.metadata.vid){
+        var playlistUrl = plist + _v.metadata.vid;
+        hu.getJson(playlistUrl,function(err,content){
+            if(err){
+                _v.error(err.tostring());
+                return;
+            }
+            _parseMetadata(content,_v);
+        });
+    }else{
+        var _url = _v.url;
+        var vid = _url.replace(youku_reg,'$1$2');
+        _v.setVid(vid);
+        resolve(_v);
     }
-    getSourceUrl(content,_v);
-  });
-};
+}
 
+function _isURL(_url){
+    return true;
+}
 
-exports.parseMetadata = function(_v){
-    var playlistUrl = plist + _v.vid;
+exports.getResource = function(report){
+    var deferred = defer();
+    var playlistUrl = plist + report.metadata.vid;
     hu.getJson(playlistUrl,function(err,content){
         if(err){
-            _v.error(err.tostring());
+            deferred.reject(err.tostring());
             return;
         }
         var data = content.data[0];
         if(!data){
-            _v.error('cannot get Metadata');
+            deferred.reject('cannot get Metadata');
             return;
         }
         if(data.error){
-            _v.error(data.error);
+            deferred.reject(data.error);
             return;
         }
-        var profile = {};
-        profile.title = data.title;
-        profile.provider ='youku';
-        profile.types = data.streamtypes;
-        _v.emit(constans.metadataEvent,profile);
+        var seed = data.seed,type = 'mp4' ==report.parameter.type?'mp4':'flv';
+        var streamFileids = data.streamfileids[type];
+        var resource = new video(report,deferred);
+        if(!streamFileids){
+            deferred.reject('no types');
+            return;
+        }
+        var ids = streamFileids.split('*'),mstr = getMixString(seed),tmp = [],i;
+        for(i=0;i<ids.length;i++){
+            tmp[i] = mstr[parseInt(ids[i])];
+        }
+        var id = tmp.join('') , id_pre = id.slice(0, 8) , id_end = id.slice(10);
+        resource.setSuffix(type);
+        resource.setCount(data.segs[type].length);
+        for(i =0;i<data.segs[type].length;i++){
+            var seg = data.segs[type][i],no = '0'+parseInt(seg.no).toString(16);
+            resource.addUrl(i,util.format(url_format,getSerialId(),no,type,id_pre,no.toUpperCase(),id_end,seg.k,seg.seconds));
+        }
     });
+    return deferred.promise;
 }
+
+
+exports.parseMetadata = function(_url){
+    var deferred = defer();
+    try{
+        var vid = _url.replace(youku_reg,'$1$2');
+        if(!vid)
+            throw new Error('cannot get vid');
+        var playlistUrl = plist + vid;
+        hu.getJson(playlistUrl,function(err,content){
+            if(err){
+                deferred.reject(err.tostring());
+                return;
+            }
+            var data = content.data[0];
+            if(!data){
+                deferred.reject('cannot get Metadata');
+                return;
+            }
+            if(data.error){
+                deferred.reject(data.error);
+                return;
+            }
+            deferred.resolve({
+                'title':data.title
+                ,'type':data.streamtypes
+                ,'vid':vid
+                ,'provider':'youku'
+            });
+        });
+    }catch(e){
+        deferred.reject(e);
+    }finally{
+        return deferred.promise;
+    }
+}
+
+exports.resolve = resolve;
