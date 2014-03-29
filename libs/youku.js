@@ -82,6 +82,7 @@ exports.parseMetadata = function(_url){
     try{
         var vid = _url.replace(youku_reg,'$1$2');
         if(!vid)
+
             throw new Error('cannot get vid');
         var playlistUrl = plist + vid;
         hu.getJson(playlistUrl,function(err,content){

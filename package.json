@@ -10,5 +10,20 @@
     "flv"
   ],
   "author": "sankooc",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "async": "~0.4.0",
+    "jquery": "~2.1.0",
+    "mime": "~1.2.11",
+    "mkdir": "0.0.2",
+    "mongous": "~0.2.5",
+    "node-jquery": "~0.1.0",
+    "node-promise": "~0.5.10",
+    "node-uuid": "~1.4.1",
+    "redis": "~0.10.1",
+    "xmldom": "~0.1.19",
+    "xpath.js": "0.0.3",
+    "express": "~3.5.1",
+    "jsdom": "~0.10.3"
+  }
 }

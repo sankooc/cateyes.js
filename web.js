@@ -11,7 +11,6 @@ var express = require('express');
 var app = express();
 
 app.set('port', process.env.PORT || 8080);
-app.use(app.router);
 app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
@@ -52,6 +51,7 @@ app.get('/video',function(req,res){
             break;
     }
 });
+
 
 http.createServer(app).listen(app.get('port'), function(){
     console.log('server started on' + app.get('port'));
