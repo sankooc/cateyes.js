@@ -20,7 +20,7 @@ function getProvider(_url){
     if(v56_reg.test(_url)) return 'v56';
     if(ku6_reg.test(_url)) return 'ku6';
 }
-
+var userHome = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/';
 function video(report,deferred){
     this.report = report;
     this.report.data = {
@@ -41,6 +41,10 @@ video.prototype.getParameter = function(){
     return this.report.parameter;
 }
 
+video.prototype.getFolder=function(){
+    return this.getParameter().folder||userHome;
+}
+
 video.prototype.getData = function(){
     return this.report.data;
 }
@@ -54,9 +58,6 @@ video.prototype.addUrl = function(index,_url,md5){
     this.validate();
 }
 
-//video.prototype.setURL = function(_url){
-//    this.url = _url;
-//}
 
 video.prototype.setCount = function(count){
     this.getData().count = count;
@@ -75,22 +76,13 @@ video.prototype.setSuffix = function(suffix){
     this.getData().suffix = suffix;
 }
 
-//video.prototype.setTitle = function(title){
-//    this.data.title = title;
-//}
-
 video.prototype.getTitle=function(){
     return this.getParameter().title||this.getMetadata().title;
 }
 
 video.prototype.getTarget = function(){
-    return this.getParameter().folder + this.getTitle() + '.' +this.getData().suffix;
+    return this.getFolder()+this.getTitle()+ '.' +this.getData().suffix;
 }
-
-//video.prototype.setVid = function(vid){
-//    this.metadata.vid =vid;
-//    this.emit('vid');
-//}
 
 
 video.prototype.validate = function(){
@@ -102,75 +94,6 @@ video.prototype.validate = function(){
       this.deferred.resolve(this);
   }
 }
-
-//video.prototype.error = function(msg){
-//  this.emit('error',msg);
-//}
-
-/*
-
-fixit catch exception
-* */
-//video.prototype.download = function(param){
-//    this.on('validated',this._downloadResource);
-//    this.parseResource(param);
-//}
-//
-//video.prototype.parseMetadata = function(){
-//  this.provider.resolve(this);
-//}
-//
-//video.prototype.parseResource = function(param){
-//    this.parameter = param;
-//    this.on('metadata',this.parse);
-//    this.parseMetadata();
-//}
-//
-//
-//video.prototype.parse = function(){
-//    if(this.next)
-//        this.next();
-//}
-//
-//
-//video.prototype._downloadResource = function(){
-//    if(!fs.existsSync(this.parameter.folder)){
-//        fs.mkdir(this.parameter.folder);
-//    }
-//    taskManager.addlist(this);
-//    var target = this.parameter.folder + this.getTitle() + '.' +this.data.suffix;
-//    //TODO 文件校验
-//    if(fs.existsSync(target)){
-//        console.log('文件已存在');
-//        this.error('文件已存在');
-//        return;
-//    }
-//    var httpSet = new hu.HttpSet(this);
-//    httpSet.once('done',function(resource){
-//        resource.setState('downloaded');
-//        try{
-//            if(!fs.existsSync(folder + resource.title + resource.suffix)){
-//                console.log('start concating');
-//                resource.setState('merging');
-//                ffmpeg.concat(resource,folder);
-//            }else{
-//                console.log('已合并完成');
-//            }
-//            resource.setState('done');
-//        }catch(e){
-//
-//        }
-//    }).on('error',this.error);
-//    httpSet.doRequest();
-//}
-//
-//function getCheckSum(algorithm ,file){
-//  var shasum = crypto.createHash(algorithm)
-//  ,buffer = fs.readFileSync(file);
-//  shasum.update(buffer);
-//  return shasum.digest('hex');
-//}
-
 
 
 module.exports = video;

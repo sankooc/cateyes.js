@@ -101,7 +101,7 @@ HttpSet.prototype.doRequest= function(){
 HttpSet.prototype.singleRequest = function(){
   this._request(this.video.getData().source[0]
       ,this.video.getTitle()
-      ,this.video.getParameter().folder
+      ,this.video.getFolder()
       ,this.video.getData().suffix);
 }
 
@@ -110,7 +110,7 @@ HttpSet.prototype.batchRequest = function(){
 //    console.error('is running');
 //    return false;
 //  }
-  var folder = this.video.getParameter().folder + this.video.getTitle() + '/';
+  var folder = this.video.getFolder() + this.video.getTitle() + '/';
 
   console.log('request count %d',this.video.getData().source.length);
   for(var i=0 ;i < this.video.getData().source.length; i++){

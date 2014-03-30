@@ -10,18 +10,18 @@ exports.concat = function(resource){
 UNIX 操作系统
 */
 function _concat2(resource){
-    var folder = resource.report.parameter.folder;
+    var folder = resource.getFolder();
     var title = resource.getTitle();
-  var cmd = '';
-  var _folder =getCString(folder+title+'/'),mFile = _folder+'merge.txt';
-  cmd += 'printf \"file \'%s\' \\n \" '+_folder+'*.'+resource.getSuffix()+' > '+ mFile;
-  cmd += ' && ffmpeg -f concat -i '+ mFile +' -c copy '+getCString(resource.getTarget());
-  cmd += ' && rm -f '+ mFile;
-  console.log(cmd);
-  var obj = exec(cmd);
-  obj.on('exit',function(){
-    console.log('concat %s complete',resource.getTitle());
-  });
+    var cmd = '';
+    var _folder =getCString(folder+title+'/'),mFile = _folder+'merge.txt';
+    cmd += 'printf \"file \'%s\' \\n \" '+_folder+'*.'+resource.getSuffix()+' > '+ mFile;
+    cmd += ' && ffmpeg -f concat -i '+ mFile +' -c copy '+getCString(resource.getTarget());
+    cmd += ' && rm -f '+ mFile;
+    console.log(cmd);
+    var obj = exec(cmd);
+    obj.on('exit',function(){
+        console.log('concat %s complete',resource.getTitle());
+    });
 }
 
 /*
