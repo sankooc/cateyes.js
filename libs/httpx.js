@@ -49,7 +49,7 @@ function _download(source){
             source.url = ret.url;
             source.total = ret.length;
             source.suffix = ret.extension;
-            source.state =false;
+            source.state ='init';
             var filepath = getPath(source);
             if(fs.existsSync(filepath)){
                 var len = fs.statSync(filepath).size;

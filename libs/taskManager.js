@@ -108,8 +108,14 @@ function updateList(){
 var fs = require('fs');
 
 function _remove(_id){
+    delete tasks[_id];
     console.log('remove %s in %s list',onQueue,_id);
     client.lrem(onQueue,0,_id);
+    db.update({
+        '_id':_id
+    },{
+        '$set':{'state':'done'}
+    });
 }
 
 function _download(resource){
@@ -119,14 +125,17 @@ function _download(resource){
                 break;
             default:
                 console.log('start concating');
-                resource.setState('merging');
+//                resource.setState('merging');
                 ffmpeg.concat(resource);
-                resource.setState('done');
+//                resource.setState('done');
                 break
         }
+        resource.setState('done');
         _remove(resource.report._id);
     },function(err){
-        console.error(err);
+        resource.setState('error');
+        _remove(resource.report._id);
+
     });
 }
 
@@ -135,13 +144,14 @@ function doDownload(_id){
         if(doc.numberReturned < 1)
             return;
         var report = doc.documents[0];
-        tasks[report._id] = report;
         var provider = require('./'+report.metadata.provider);
         provider.getResource(report).then(
             function(resource){
+                tasks[report._id] = report;
                 _download(resource);
             },function(err){
-                //TODO
+                console.error(err);
+                updateList();
             }
         );
     });
@@ -188,18 +198,40 @@ exports.getWaitTasks = function(){
     return _getTask(waitQueue);
 }
 
-
-exports.getActiveTask = function(_id){
-    if(_id)
-        return tasks[_id];
-    return tasks;//TODO 副本
+exports.getDetail=function(id){
+    var deferred = defer();
+    deferred.resolve(tasks[id]);
+//    db.find({'_id':id},function(doc){
+//        deferred.resolve(doc.documents[0]);
+//    });
+    return deferred.promise;
 }
 
-exports.getAllTask = function(){
+function convert(report){
+    return {
+        '_id':report._id
+        ,'state':report.state
+        ,'title':report.parameter.title || report.metadata.title
+    };
+}
+
+exports.getTask = function(con){
     var deferred = defer();
-    db.find({},function(doc){
-        deferred.resolve(doc.documents);
-    });
+    if(con.state == 'active'){
+        var ret = [];
+        for(var k in tasks){
+            ret.push(convert(tasks[k]));
+        }
+        deferred.resolve(ret);
+    }else{
+        db.find(con,function(doc){
+            var ret=[];
+            for(var i=0;i<doc.documents.length;i++){
+                ret.push(convert(doc.documents[i]));
+            }
+            deferred.resolve(ret);
+        });
+    }
     return deferred.promise;
 }
 

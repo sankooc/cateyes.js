@@ -2,7 +2,6 @@ var assert = require("assert");
 var cateyes = require('../cateyes');
 var sohu = require('../libs/sohu');
 var video = require('../libs/video');
-var constans = require('../libs/constans');
 
 var sohuSurl = 'http://tv.sohu.com/20140119/n393765790.shtml';
 var youkuUrl = 'http://player.youku.com/player.php/sid/XNjYzNDI5MzAw/v.swf';

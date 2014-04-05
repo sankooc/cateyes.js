@@ -1,4 +1,4 @@
-var hu      = require('./httpUtil')
+var HTTPX = require('./httpx')
     ,util   = require('util')
     ,select = require('xpath.js')
     ,dom    = require('xmldom').DOMParser
@@ -15,11 +15,10 @@ var regex_1 = /[\S\s]*vid:"(\w+)"[\S\s]*/
 
 exports.getResource = function(report){
     var deferred = defer();
-    hu.getText(util.format(plistFormat,report.metadata.vid),'utf-8',function(err,content){
-        if(err){
-            deferred.reject(err);
-            return;
-        }
+    var errFuc = function(err){
+        deferred.reject(err);
+    }
+    HTTPX.getText(util.format(plistFormat,report.metadata.vid)).then(function(content){
         var doc = new dom().parseFromString(content)
             ,_url = select(doc, xpath_url)[0].data
             ,_length = select(doc, xpath_length)[0].data
@@ -30,48 +29,30 @@ exports.getResource = function(report){
         resource.setSuffix(_suffix);
         resource.setCount(1);
         resource.addUrl(0,_url,_md5);
-    });
-
+        deferred.resolve(resource);
+    },errFuc);
     return deferred.promise;
 }
 
 exports.parseMetadata = function(_url){
     var deferred = defer();
-    try{
-        async.waterfall([
-            function(cb) {
-                hu.getText(_url,'utf-8',function(err,content){
-                    cb(err,content.replace(regex_1,'$1'));
-                });
-            },
-            function(vid,cb) {
-                hu.getText(util.format(plistFormat,vid),'utf-8',function(err,content){
-                    if(err){
-                        cb(err);
-                        return;
-                    }
-                    var doc = new dom().parseFromString(content)
-                        ,_url = select(doc, xpath_url)[0].data
-                        ,_suffix = '.'+_url.replace(/.*&fmt=(\w+)&.*/g,'$1');
-                    if(_suffix.length > 6) _suffix = 'flv';
-                    cb(null,{
-                        'title':''
-                        ,'provider':'tencent'
-                        ,'type':[_suffix]
-                        ,'vid':vid
-                    });
-                });
-            }
-        ], function (err, result) {
-            if(err){
-                deferred.reject(err);
-                return;
-            }
-            deferred.resolve(result);
-        });
-    }catch(e){
-        deferred.reject(e);
-    }finally{
-        return deferred.promise;
+    var errFuc = function(err){
+        deferred.reject(err);
     }
+    HTTPX.getText(_url).then(function(content){
+        var vid = content.replace(regex_1,'$1')
+        HTTPX.getText(util.format(plistFormat,vid)).then(function(content){
+            var doc = new dom().parseFromString(content)
+                ,_url = select(doc, xpath_url)[0].data
+                ,_suffix = '.'+_url.replace(/.*&fmt=(\w+)&.*/g,'$1');
+            if(_suffix.length > 6) _suffix = 'flv';
+            deferred.resolve({
+                'title':''
+                ,'provider':'tencent'
+                ,'type':[_suffix]
+                ,'vid':vid
+            });
+        },errFuc);
+    },errFuc);
+    return deferred.promise;
 }

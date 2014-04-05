@@ -118,7 +118,7 @@ exports.parseMetadata = function(_url){
                 ,'provider':'youku'
             });
         },function(err){
-
+            deferred.reject(err);
         });
     }catch(e){
         deferred.reject(e);

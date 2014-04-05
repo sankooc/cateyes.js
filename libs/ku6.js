@@ -1,42 +1,47 @@
-var hu = require('./httpUtil')
-   ,util = require('util')
+var HTTPX = require('./httpx')
+    ,util = require('util')
+    ,video = require('./video')
+    ,defer = require("node-promise").defer
 
 var pattern_url = /[\s\S]*\/video\/(\d+)[\s\S]*/
    ,pattren_title = /[\s\S]*title : "([^\"]+)",[\s\S]*"/
    ,pattren_ll = /[\s\S]*videoUrl : '([^\"]+)'[\s\S]*/
 
-function getVid(_v){
-  var vid = _v.orignalUrl.replace(/.*\/([^\/]+).html/g,'$1');
-    _v.setVid(vid);
-}
-function resolv(_v){
-  var plist = 'http://v.ku6.com/fetchVideo4Player/'+_v.vid+'.html';
-  console.log(plist);
-  hu.getJson(plist,function(err,content){
-    if(err){
-      _v.error(err);
-    }
-    var _url = content.data.f
-       ,title = content.data.t
-    _v.setTitle(title);
-    _v.setCount(1);
-    _v.addUrl(0,_url);
-  });
-}
-exports.parseMetadata = function(_v){
-    var plist = 'http://v.ku6.com/fetchVideo4Player/'+_v.vid+'.html';
-    console.log(plist);
-    hu.getJson(plist,function(err,content){
-        if(err){
-            _v.error(err);
+
+exports.parseMetadata = function(_url){
+    var deferred = defer()
+        ,vid = _url.replace(/.*\/([^\/]+).html/g,'$1')
+        ,plist = 'http://v.ku6.com/fetchVideo4Player/'+vid+'.html'
+        ,funErr = function(err){
+            deferred.reject(err);
         }
-        var title = content.data.t
-        var profile = {};
-        profile.title = title;
-        profile.provider ='ku6';
-        profile.types = ['flv'];
-        _v.emit('title',profile);
-    });
-};
-exports.resolv=resolv;
-exports.getVid=getVid;
+    HTTPX.getText(plist).then(function(text){
+        var content = JSON.parse(text)
+            ,title = content.data.t
+        deferred.resolve({
+            'title':title
+            ,'provider':'ku6'
+            ,'type':['flv']
+            ,'vid':vid
+        });
+    },funErr);
+    return deferred.promise;
+}
+
+exports.getResource = function(report){
+    var deferred = defer()
+        ,vid = report.metadata.vid
+        ,plist = 'http://v.ku6.com/fetchVideo4Player/'+vid+'.html'
+        ,funErr = function(err){
+            deferred.reject(err);
+        }
+    HTTPX.getText(plist).then(function(text){
+        var content = JSON.parse(text)
+            ,_url = content.data.f
+        var resource = new video(report);
+        resource.setCount(1);
+        resource.addUrl(0,_url);
+        deferred.resolve(resource);
+    },funErr);
+    return deferred.promise;
+}

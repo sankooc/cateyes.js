@@ -2,11 +2,6 @@
  * Created by sankooc on 14-3-5.
  */
 $(document).ready(function(){
-//    $('.nav a').click(itemClick);
-//    $('.nav a:first').click();
-//    createBody();
-//    $(".alert").close();
-//    createAlert('Best check yo self,').appendTo('body');
     addListen();
     getContent();
 });
@@ -20,7 +15,7 @@ function addListen(){
             'metadata':tmp,
             'parameter':{
                 'title':$('#inputTitle').val()
-                ,'folder':'/Users/sankooc/test/'
+//                ,'folder':'/Users/sankooc/test/'
                 ,'type':$('#inputType option:selected').text()
             }
         }
@@ -62,14 +57,24 @@ function addListen(){
 
 }
 
+function getDetail(id){
+    $.get('/detail?id='+id).done(function(data){
+
+    })
+        .fail(function(data) {
+    })
+        .always(function() {
+        });
+}
+
 function getContent(){
-    $.get("/video?type=active")
+    $.get("/video?state=active")
         .done(function(data) {
             for(var rec in data){
                 var title = data[rec].parameter.title || data[rec].metadata.title;
                 (function(data,rec,title){
                     $('<li><a href="#">'+title+'</a></li>').click(function(){
-                        alert(rec);
+                        getDetail(rec);
                     }).appendTo('#downloading');
                 })(data,rec,title);
 

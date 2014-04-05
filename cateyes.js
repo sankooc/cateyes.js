@@ -36,9 +36,12 @@ exports.getResource = function(report){
     return provider.getResource(report);
 }
 
-exports.getActiveTask = function(_id){
-    return taskManager.getActiveTask(_id);
+exports.getDetail=function(id){
+    return taskManager.getDetail(id)
 }
 
+exports.getTask=function(con){
+    return taskManager.getTask(con);
+}
 
 exports.getProvider=getProvider;

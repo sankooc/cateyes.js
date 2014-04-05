@@ -17,7 +17,7 @@ function getProvider(_url){
     if(ku6_reg.test(_url)) return 'ku6';
 }
 var userHome = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/Movies/cateyes/';
-function video(report,deferred){
+function video(report){
     this.report = report;
     this.report.data = {
         'count':0,//碎片数量
@@ -25,7 +25,8 @@ function video(report,deferred){
         'checksum':'',
         'source':[]//视频碎片
     }
-    this.deferred = deferred;
+    this.setState('init')
+//    this.deferred = deferred;
 }
 
 
@@ -51,18 +52,16 @@ video.prototype.addUrl = function(index,_url,md5){
         "url":_url,
         "checksum": md5
     };
-//    this.validate();
 }
 video.prototype.setCount = function(count){
     this.getData().count = count;
 }
 video.prototype.setState = function(state){
-    this.status = state;
+    this.report.status = state;
 }
 video.prototype.getSource=function(){
     return this.getData().source;
 }
-
 video.prototype.getSuffix = function(){
     return this.getData().suffix;
 }
@@ -79,15 +78,15 @@ video.prototype.getTarget = function(){
 }
 
 
-video.prototype.validate = function(){
-  if(this.getTitle() && this.getData().source.length == this.getData().count){
-      for(var i=0;i<this.getData().source.length;i++){
-          if(!this.getData().source[i] || !this.getData().source[i].url)
-              return;
-      }
-      this.deferred.resolve(this);
-  }
-}
+//video.prototype.validate = function(){
+//  if(this.getTitle() && this.getData().source.length == this.getData().count){
+//      for(var i=0;i<this.getData().source.length;i++){
+//          if(!this.getData().source[i] || !this.getData().source[i].url)
+//              return;
+//      }
+//      this.deferred.resolve(this);
+//  }
+//}
 
 video.prototype.isExist=function(){
     if(fs.existsSync(this.getTarget())){

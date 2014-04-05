@@ -42,14 +42,26 @@ app.get('/metadata',function(req,res){
     });
 });
 
+app.get('/detail',function(req,res){
+    var query = req.query;
+    cateyes.getDetail(query.id).then(function(ret){
+        res.json(ret);
+    },function(err){
+        res.send(500,err);
+    });
+})
+
 app.get('/video',function(req,res){
     var query = req.query;
-    switch(query.type){
-        case 'active':
-            var _id = query.id;
-            res.json(cateyes.getActiveTask(_id));
-            break;
+    var con = {};
+    for(var k in query){
+        con[k] = query[k];
     }
+    cateyes.getTask(con).then(function(ret){
+        res.json(ret);
+    },function(err){
+        res.send(500,err);
+    });
 });
 
 
