@@ -1,4 +1,3 @@
-var hu = require('./libs/httpUtil');
 var util = require('util');
 var fs = require('fs');
 var logger = console;

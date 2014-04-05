@@ -1,11 +1,7 @@
 var events = require('events')
    ,util = require('util')
-   ,hu = require('./httpUtil')
-//   ,fs = require('fs')
-//   ,ffmpeg =require('./ffmpeg')
    ,crypto = require('crypto')
-//   ,uuid = require('node-uuid')
-//   ,taskManager =require('taskManager')
+    ,fs = require('fs');
 
 var youku_reg = /^http:\/\/v.youku.com\/v_show\/id_([\w=]+).html$|^http:\/\/player.youku.com\/player.php\/sid\/([\w=]+)\/v.swf$/
     ,sohu_reg = /v.sohu.com\//
@@ -20,7 +16,7 @@ function getProvider(_url){
     if(v56_reg.test(_url)) return 'v56';
     if(ku6_reg.test(_url)) return 'ku6';
 }
-var userHome = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/';
+var userHome = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/Movies/cateyes/';
 function video(report,deferred){
     this.report = report;
     this.report.data = {
@@ -55,18 +51,16 @@ video.prototype.addUrl = function(index,_url,md5){
         "url":_url,
         "checksum": md5
     };
-    this.validate();
+//    this.validate();
 }
-
-
 video.prototype.setCount = function(count){
     this.getData().count = count;
 }
 video.prototype.setState = function(state){
     this.status = state;
 }
-video.prototype.setQuality = function(quality){
-    this.getData().type = quality;
+video.prototype.getSource=function(){
+    return this.getData().source;
 }
 
 video.prototype.getSuffix = function(){
@@ -95,5 +89,11 @@ video.prototype.validate = function(){
   }
 }
 
+video.prototype.isExist=function(){
+    if(fs.existsSync(this.getTarget())){
+        return true;
+    }
+    return false;
+}
 
 module.exports = video;

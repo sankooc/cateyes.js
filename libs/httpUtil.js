@@ -5,39 +5,76 @@ var http = require('http')
    ,events = require('events')
    ,defer = require("node-promise").defer
 
+function getPlainText(url,deferred){
+    if(!deferred)
+        deferred = defer();
+    var req = http.get(url, function(res) {
+        switch(res.statusCode){
+            case 200:
+                break;
+            case 301:
+                var location = res.headers['location'];
+                console.log('redirect to %s',location);
+                req.abort();
+                getPlainText(location,deferred);
+                return;
+            default:
+                console.error('response status %s ',res.statusCode);
+                req.abort();
+                deferred.reject('response status :'+res.statusCode);
+                return;
+        }
+
+        var tmp = [] ,len=0;
+        res.on('data',function(chuck){
+            tmp.push(chuck);
+            len+=chuck.length;
+            })
+            .on('end', function (){
+                var buf = Buffer.concat(tmp,len);
+                deferred.resolve(buf.toString());
+            });
+    });
+    return deferred.promise;
+}
+
 
 function getText(url,charset,callback){
+    if(!charset)
+        charset = 'utf-8';
+    if(typeof(charset) == 'function'){
+        callback = charset;
+        charset = 'utf-8';
+    }
     var req = http.get(url, function(res) {
-    switch(res.statusCode){
-      case 200:
-        break;
-        case 301:
-//        case 302:
-        var location = res.headers['location'];
-	    console.log('redirect to %s',location);
-        req.abort();
-        getText(location,charset,callback);
-        return;
-      default:
-          console.error('response status %s ',res.statusCode);
-          req.abort();
-          callback(res.statusCode);
-      return;
-    }
-    if(charset){
-      res.setEncoding(charset);
-    }else{
-      res.setEncoding('utf-8');
-    }
-    var content= '';
-    res.on('data',function(chuck){
-    	content+=chuck;
-    }).on('end', function (){
-      if(callback){
-    	  callback(null,content);
-      }
+        switch(res.statusCode){
+            case 200:
+                break;
+            case 301:
+                var location = res.headers['location'];
+                console.log('redirect to %s',location);
+                req.abort();
+                getText(location,charset,callback);
+                return;
+            default:
+                console.error('response status %s ',res.statusCode);
+                req.abort();
+                callback(res.statusCode);
+                return;
+        }
+
+        var tmp = [] ,len=0;
+        res.on('data',function(chuck){
+//            content+=chuck;
+            tmp.push(chuck);
+            len+=chuck.length;
+        }).on('end', function (){
+                var buf = Buffer.concat(tmp,len);
+                if(callback){
+                    callback(null,buf.toString());
+                }
+            });
     });
-  });
 };
 exports.getText = getText;
 exports.getJson = function(url,callback){
@@ -106,10 +143,6 @@ HttpSet.prototype.singleRequest = function(){
 }
 
 HttpSet.prototype.batchRequest = function(){
-//  if(!this.ready){
-//    console.error('is running');
-//    return false;
-//  }
   var folder = this.video.getFolder() + this.video.getTitle() + '/';
 
   console.log('request count %d',this.video.getData().source.length);
@@ -228,8 +261,14 @@ HttpSet.prototype._remainRequest = function (source){
 
 HttpSet.prototype._writeData = function (source,res,title,path,suffix){
     var _this = this;
+   var option = { flags: 'a+',
+        encoding: null,
+        fd: null,
+        mode: 0666,
+        autoClose: true
+    }
     console.log('start to downloading : '+ source.filepath);
-	var wStream = fs.createWriteStream(source.filepath);
+	var wStream = fs.createWriteStream(source.filepath,option);
 	res.on('data',function(chuck){
         wStream.write(chuck);
         source.current += chuck.length;

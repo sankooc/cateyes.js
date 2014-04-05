@@ -8,7 +8,7 @@ var redis = require("redis"),
     mongo = require('mongous').Mongous,
     db = mongo('cateyes.video'),
     uuid = require('node-uuid'),
-    hu = require('./httpUtil'),
+    HTTPX = require('./httpx'),
     defer = require("node-promise").defer,
     util = require("util"),
     ffmpeg = require('./ffmpeg'),
@@ -113,30 +113,18 @@ function _remove(_id){
 }
 
 function _download(resource){
-    var target = resource.getTarget();
-    //TODO 文件校验
-    if(fs.existsSync(target)){
-        console.log('文件已存在');
-        _remove(resource._id);
-        return;
-    }
-    var httpSet = new hu.HttpSet(resource);
-    httpSet.doRequest().then(function(_v){
-        resource.setState('downloaded');
-        try{
-            if(!fs.existsSync(target)){
+    HTTPX.download(resource).then(function(status){
+        switch(status){
+            case 'complete':
+                break;
+            default:
                 console.log('start concating');
                 resource.setState('merging');
                 ffmpeg.concat(resource);
-            }else{
-                console.log('已合并完成');
-            }
-            resource.setState('done');
-        }catch(e){
-            console.error(e);
-        }finally{
-            _remove(resource.report._id);
+                resource.setState('done');
+                break
         }
+        _remove(resource.report._id);
     },function(err){
         console.error(err);
     });
