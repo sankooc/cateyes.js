@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/main.css">
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.js"></script>
-    <script src="js/bootstrap-wrap.js"></script>
+    <!--<script src="js/bootstrap-wrap.js"></script>-->
     <script src="js/index.js"></script>
 </head>
 <body>
@@ -24,15 +24,12 @@
 <div class="container">
 
     <div class="row">
-        <div class="span4">
-            <ul class="nav nav-list" id="waiting">
-                <li class="nav-header">下载等待</li>
-            </ul>
-            <ul class="nav nav-list" id="downloading">
-                <li class="nav-header">下载中</li>
-            </ul>
-            <ul class="nav nav-list" id="downloaded">
-                <li class="nav-header">下载完毕</li>
+        <div class="span2">
+            <ul class="nav nav-list " id="download">
+                <li class="nav-header">下载</li>
+                <li class=""><a href='#' data-toggle="tab">下载等待</a></li>
+                <li class=""><a href='#' data-toggle="tab">下载中</a></li>
+                <li class=""><a href='#' data-toggle="tab">下载完毕</a></li>
             </ul>
             <ul class="nav nav-list" id="setup">
                 <li class="divider"></li>
@@ -43,8 +40,7 @@
                 <li><a href="#">Help</a></li>
             </ul>
         </div>
-        <div class="span8">
-
+        <div class="span10" id="content">
         </div>
     </div>
 </div>

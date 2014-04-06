@@ -3,19 +3,53 @@
  */
 $(document).ready(function(){
     addListen();
-    getContent();
+//    selectActiveItem();
 });
-var tmp;
-function addListen(){
+var tmp
+var period = 1000
+var imId
+var activeList = []
+var errFun = function(err){
+    console.error(err);
+};
 
+function clearContent(){
+    return $('#content').empty();
+}
+
+function selectActiveItem(){
+    activeList=[];
+    clearContent();
+    $('<div class="tabbable tabs-top">' +
+        '<ul class="nav nav-pills"></ul>' +
+        '<div class="tab-content"></div></div>')
+        .appendTo('#content');
+    updateActiveItem();
+}
+
+function selectItemFun(state){
+    var url = "/video?state="+state;
+    return function(){
+        clearContent();
+        $.get(url).done(function(data) {
+            $('<table class="table table-hover table-bordered"><thead><tr><th style="width: 10%">#</th><th>Title</th></tr></thead></table>')
+                .appendTo('#content')
+            for(var i=0;i<data.length;i++){
+                $('<tr><td style="width: 10%">'+i+'</td><td>'+data[i].title+'</td></tr>').appendTo('table');
+            }
+
+        }).fail(errFun)
+    };
+}
+
+
+function addListen(){
     $('#_form').submit(function(e){
         e.preventDefault();
-
         var data = {
             'metadata':tmp,
             'parameter':{
                 'title':$('#inputTitle').val()
-//                ,'folder':'/Users/sankooc/test/'
                 ,'type':$('#inputType option:selected').text()
             }
         }
@@ -28,6 +62,9 @@ function addListen(){
 
         }).always(function(){
             $('#byurl').modal('hide')
+            setTimeout(function(){
+                //TODO update
+            },500);
         });
     });
 
@@ -48,134 +85,109 @@ function addListen(){
                     $('<option/>').text(data.type[i]).appendTo('#inputType');
                 }
             })
-            .fail(function(data) {
-            })
+            .fail(errFun)
             .always(function() {
                 $('.icon-pencil').attr('style','');
             });
     });
 
+    $('#download>li:eq(1)').click(selectItemFun('init'));
+    $('#download>li:eq(2)').click(selectActiveItem);
+    $('#download>li:eq(3)').click(selectItemFun('done'));
 }
 
-function getDetail(id){
-    $.get('/detail?id='+id).done(function(data){
-
-    })
-        .fail(function(data) {
-    })
-        .always(function() {
-        });
+function _create(key,val){
+    return $('<tr class="success"><td style="width: 10%">'+key+'</td><td colspan="2">'+val+'</td></tr>').appendTo('table');
 }
 
-function getContent(){
-    $.get("/video?state=active")
-        .done(function(data) {
-            for(var rec in data){
-                var title = data[rec].parameter.title || data[rec].metadata.title;
-                (function(data,rec,title){
-                    $('<li><a href="#">'+title+'</a></li>').click(function(){
-                        getDetail(rec);
-                    }).appendTo('#downloading');
-                })(data,rec,title);
+function _create_2(index){
+    return $('<tr class="info"><td style="width: 10%">process'+(index+1)+'</td>'
+        +'<td style="width: 80%"><div class="progress progress-striped active" style="margin-bottom: 0">'
+        +'<div class="bar"></div></div></td><td></td></tr>').appendTo('table');
+}
 
+function _setProgressPecent(node,source){
+    var percent =Math.round(source.current*100/source.total)
+    if(percent == NaN)
+        percent = 0
+    percent = percent + '%';
+    node.find('td div div').css('width',percent).text(percent);
+}
+
+function _setProgressSpeed(node,spd){
+    node.find('td:eq(2)').text(spd);
+}
+
+function getDetail(item){
+    $.get('/detail?id='+item._id).done(function(data){
+        if(imId)
+            clearInterval(imId);
+        if($('table').length == 0){
+            $('<table class="table table-hover table-bordered"></table>').appendTo('#content>div>div')
+        }
+        $('table').empty();
+        var currentData = data;
+        _create('title',data.parameter.title||data.metadata.title);
+        _create('type',data.parameter.type);
+        _create('provider',data.metadata.provider);
+        var num = data.data.count;
+        var ret = [];
+        for(var i =0;i<num;i++){
+            var node = _create_2(i);
+            ret.push(node);
+            _setProgressPecent(node,data.data.source[i])
+        }
+        var speedNode = _create('speed','0');
+        imId=setInterval(function(){
+            $.get('/detail?id='+item._id).done(function(data){
+                var acc =0;
+                for(var j=0;j<data.data.source.length;j++){
+                    _setProgressPecent(ret[j],data.data.source[j])
+                    var inc = data.data.source[j].current-currentData.data.source[j].current;
+                    acc +=inc;
+                    if(data.data.source[j].state == 'done'){
+                        _setProgressSpeed(ret[j],'done');
+                    }else{
+                        _setProgressSpeed(ret[j],Math.round(inc/1024)+'kbs');
+                    }
+                }
+                speedNode.find('td:eq(1)').text(acc/1024+'kb');
+                currentData = data;
+                if(data.state == 'done'){
+                    clearInterval(imId);
+                    imId = null;
+                }
+            }).fail(function(err,ret){
+                    alert(err);
+                })
+        },period);
+    }).fail(errFun);
+}
+
+function addItem(data){
+    for(var i=0;i<data.length;i++){
+        var item = data[i]
+            ,parentNode
+        switch(item.state){
+            case 'init':
+                parentNode = '#content>div>ul';
+                break;
+            default:
+                return;
+        }
+        var column = $('<li class="broke"><a data-toggle="tab">'+item.title+'</a></li>');
+        column.data('item',item);
+        column.click(function(e){
+            if($(this).hasClass('active')){
+               return;
             }
-//            for(var i=0;i<data.length;i++){
-//                var title = data.parameter.title || data.metadata.title;
-//                $('<li><a href="#">'+title+'</a></li>').appendTo('#downloading');
-//
-//            }
-//            $('#downloading').append();
-        })
-        .fail(function(data) {
-        })
-        .always(function() {
-        });
-}
-
-function $navbar(pos){
-    var root = $div('body','navbar');
-    switch(pos){
-        case 'top':
-            root.addClass('navbar-fixed-top');
-            break;
-        case 'bottom':
-            root.addClass('navbar-fixed-bottom');
-            break;
+            getDetail($(this).data('item'));
+        }).appendTo(parentNode)
     }
-
-    return $div($div(root,'navbar-inner'),'container');
 }
 
-function addButton(parent,text,color){
-    var btn = $('<button/>').appendTo(parent).addClass('btn').text(text);
-    if(btn){
-        btn.addClass(color);
-    }
-    return btn;
-}
-
-function $div(parent,clz){
-    return $('<div/>').appendTo(parent).addClass(clz);
-}
-
-
-function $ul(parent,clz){
-    return $('<ul/>').appendTo(parent).addClass(clz);
-}
-
-function $li(parent,clz){
-    return $('<li/>').appendTo(parent).addClass(clz);
-}
-
-function createBody(){
-    $div($navbar('top'),'brand').text('Cateyes');
-
-//    $('<div/>').addClass('brand').text('Cateyes').appendTo($navbar('top'));
-    var footer = $navbar('bottom');
-    $('<a/>').appendTo(footer).attr('href','#byurl').addClass('btn btn-inverse')
-        .attr('role','button').attr('data-toggle','modal').text('BYURL');
-//    addButton(footer,'BY URL','btn-inverse').attr('onclick','#myModal');
-
-//    var body = $('body');
-//    var container = $div(body,'container');
-//    var raw = $div(container,'raw');
-//    var left = $div(raw,'span4');
-//    var right = $div(raw,'span8');
-//    var ul = $ul(left,'nav nav-list');
-//    $li(ul,'nav-header').text('下载中');
-
-
-}
-
-function createAlert(message){
-    var _alert = $('<div/>').addClass('alert alert-error fade in');
-    _alert.append('<button type="button" class="close" data-dismiss="alert">&times;</button>');
-    _alert.append('<h4>Warning!</h4>');
-    _alert.append(message);
-//    _alert.text(message);
-    return _alert;
-}
-
-
-function itemClick(e){
-    var $this = $(this);
-    var sel = $this.attr('href');
-    $('.nav li').each(function(){
-        if($(this).hasClass('active')){
-            $(this).removeClass('active');
-        }
-    });
-
-    if($this.parent().hasClass('active')){
-        return;
-    }else{
-        $this.parent().addClass('active');
-    }
-    $('.tab-content div').each(function(){
-        if($(this).hasClass('active')){
-            $(this).removeClass('active');
-        }
-    });
-    $(sel).addClass('active');
-    e.preventDefault();
+function updateActiveItem(){
+    $.get("/video?state=active").done(function(data) {
+        addItem(data);
+    }).fail(errFun)
 }

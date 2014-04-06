@@ -3,7 +3,26 @@ body{
     /*background-image: url('../bk.jpg');*/
 }
 
+#content>div>ul{
+    margin-bottom:0px;
+}
 
+.broke{
+    width: 100px;
+    /*white-space: nowrap;*/
+    /*text-overflow: ellipsis;*/
+    /*overflow: hidden;*/
+    /*padding-right: 0px;*/
+    /*word-wrap: break-word;*/
+}
+
+.broke a{
+    padding-top: 4px;
+    padding-bottom: 4px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
 /*.navbar*/
 /*{*/
     /*opacity:0.5*/

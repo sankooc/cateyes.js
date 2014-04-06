@@ -90,7 +90,7 @@ function _download(source){
             })
             res.on('end',function(){
                 wStream.end();
-                source.state = 'complete';
+                source.state = 'done';
                 deferred.resolve();
             });
         });

@@ -125,9 +125,7 @@ function _download(resource){
                 break;
             default:
                 console.log('start concating');
-//                resource.setState('merging');
                 ffmpeg.concat(resource);
-//                resource.setState('done');
                 break
         }
         resource.setState('done');
@@ -148,6 +146,11 @@ function doDownload(_id){
         provider.getResource(report).then(
             function(resource){
                 tasks[report._id] = report;
+                db.update({
+                    '_id':report._id
+                },{
+                    '$set':{'state':'active'}
+                });
                 _download(resource);
             },function(err){
                 console.error(err);

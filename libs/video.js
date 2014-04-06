@@ -26,7 +26,6 @@ function video(report){
         'source':[]//视频碎片
     }
     this.setState('init')
-//    this.deferred = deferred;
 }
 
 
@@ -57,7 +56,7 @@ video.prototype.setCount = function(count){
     this.getData().count = count;
 }
 video.prototype.setState = function(state){
-    this.report.status = state;
+    this.report.state = state;
 }
 video.prototype.getSource=function(){
     return this.getData().source;
