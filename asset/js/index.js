@@ -7,13 +7,14 @@ $(document).ready(function(){
 });
 var tmp
 var period = 1000
-var imId
+var imId=null
 var activeList = []
 var errFun = function(err){
     console.error(err);
 };
 
 function clearContent(){
+    clearInt();
     return $('#content').empty();
 }
 
@@ -118,10 +119,15 @@ function _setProgressSpeed(node,spd){
     node.find('td:eq(2)').text(spd);
 }
 
+function clearInt(){
+    if(imId)
+        clearInterval(imId);
+    imId = null;
+}
+
 function getDetail(item){
     $.get('/detail?id='+item._id).done(function(data){
-        if(imId)
-            clearInterval(imId);
+        clearInt()
         if($('table').length == 0){
             $('<table class="table table-hover table-bordered"></table>').appendTo('#content>div>div')
         }
@@ -141,6 +147,9 @@ function getDetail(item){
         imId=setInterval(function(){
             $.get('/detail?id='+item._id).done(function(data){
                 var acc =0;
+                if(!data || !data.data){
+                    clearInt()
+                }
                 for(var j=0;j<data.data.source.length;j++){
                     _setProgressPecent(ret[j],data.data.source[j])
                     var inc = data.data.source[j].current-currentData.data.source[j].current;
@@ -154,11 +163,10 @@ function getDetail(item){
                 speedNode.find('td:eq(1)').text(acc/1024+'kb');
                 currentData = data;
                 if(data.state == 'done'){
-                    clearInterval(imId);
-                    imId = null;
+                    clearInt()
                 }
             }).fail(function(err,ret){
-                    alert(err);
+//                    alert(err);
                 })
         },period);
     }).fail(errFun);

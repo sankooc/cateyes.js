@@ -5,7 +5,7 @@ var http = require('http')
     ,url = require('url')
     ,fs = require('fs')
     ,mime = require('mime')
-    ,cateyes = require('./cateyes')
+    ,cateyes = require('./lib/cateyes')
 
 var express = require('express');
 var app = express();
@@ -45,10 +45,10 @@ app.get('/metadata',function(req,res){
 app.get('/detail',function(req,res){
     var query = req.query;
     cateyes.getDetail(query.id).then(function(ret){
-        if(ret){
-           res.json(ret);
+        if(!ret){
+            ret = {};
         }
-        res.send(200);
+        res.json(ret);
     },function(err){
         res.send(500,err);
     });
@@ -72,8 +72,5 @@ app.post('/settings',function(req,res){
 
     res.send(200);
 });
-var server = http.Server(app);
+var server = http.Server(app)
 server.listen(app.get('port'));
-//http.createServer(app).listen(app.get('port'), function(){
-//    console.log('server started on' + app.get('port'));
-//});

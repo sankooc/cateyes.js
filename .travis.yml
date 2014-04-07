@@ -4,5 +4,4 @@ node_js:
 
 services:
   - mongodb
-  - redis
-  - ffmpeg
+  - redis-server
