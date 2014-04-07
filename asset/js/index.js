@@ -109,7 +109,7 @@ function _create_2(index){
 
 function _setProgressPecent(node,source){
     var percent =Math.round(source.current*100/source.total)
-    if(percent == NaN)
+    if(isNaN(percent))
         percent = 0
     percent = percent + '%';
     node.find('td div div').css('width',percent).text(percent);
