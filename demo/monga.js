@@ -14,12 +14,10 @@ var folder = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']
 var url = 'http://manhua.dmzj.com/xfgj/';
 var baseUrl = 'http://manhua.dmzj.com';
 request(url,function(err,response,body){
-
-//    body.replace(/var g_max_pic_count = /d/,'$1');
     env(body,function(err,window){
         var tasks = [];
         var $ = require('jquery')(window)
-        for(var i =420;i<=446;i++){
+        for(var i =418;i<=418;i++){
             var name = "第"+i+"话";
             var subfix =$("a:contains('第"+i+"话')").attr('href');
             tasks.push(createD(baseUrl+subfix,folder+name+'/'));
@@ -39,13 +37,22 @@ function createD(_url,target){
             var ea = body.replace(/[\s\S]*var page = '';([\s\S]+)var g_comic_name[\s\S]*/g,'$1');
             eval(ea);
             var pps = eval(pages);
+            var list =[];
             for(var i =0;i<pps.length;i++){
                 var resource = pre2+pps[i];
                 var name = decodeURIComponent(resource.substring(resource.lastIndexOf('/')+1));
                 var des = target+name;
-                request(resource).pipe(fs.createWriteStream(des));
+                list.push((function(resource,des){
+                    return function(callback){
+                        request(resource).pipe(fs.createWriteStream(des)).on('finish', function() {
+                            callback(null);
+                        });
+                    }
+                })(resource,des));
             }
-            cb(null);
+            async.parallel(list,function(err,ret){
+                cb(err,ret);
+            });
         });
     }
 }

@@ -27,6 +27,7 @@
     "jsdom": "~0.10.3",
     "request": "~2.34.0",
     "mkdirp": "~0.3.5",
-    "mocha": "*"
+    "mocha": "*",
+    "iconv-lite": "~0.2.11"
   }
 }
