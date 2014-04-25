@@ -10,7 +10,7 @@ var http = require('http')
 var express = require('express');
 var app = express();
 
-app.set('port', process.env.PORT || 8080);
+app.set('port', process.env.PORT || 8001);
 app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
