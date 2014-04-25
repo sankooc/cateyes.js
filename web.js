@@ -30,7 +30,7 @@ app.get('/', function(req, res){
 app.post('/video',function(req,res){
     console.log(req.body);
     cateyes.addToDownloadList(req.body.metadata,req.body.parameter);
-    res.send(200);
+    res.json({});
 });
 
 app.get('/metadata',function(req,res){
@@ -73,4 +73,16 @@ app.post('/settings',function(req,res){
     res.send(200);
 });
 var server = http.Server(app)
+var io = require('socket.io').listen(server);
+
 server.listen(app.get('port'));
+
+io.sockets.on('connection', function (socket) {
+    socket.emit('news', { hello: 'world' });
+    socket.on('my other event', function (data) {
+        console.log(data);
+    });
+    socket.on('disconnect',function(){
+        console.log('disconnect');
+    });
+});

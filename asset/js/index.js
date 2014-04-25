@@ -54,19 +54,12 @@ function addListen(){
                 ,'type':$('#inputType option:selected').text()
             }
         }
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: "/video",
-            data: data
-        }).done(function(ret){
-
-        }).always(function(){
-            $('#byurl').modal('hide')
-            setTimeout(function(){
-                //TODO update
-            },500);
-        });
+        $.post("/video",data,function(){
+            if($('#download>li:eq(2)').hasClass('active')){
+                setTimeout(selectActiveItem,2000);
+            }
+        },"json");
+        $('#byurl').modal('hide')
     });
 
     $('#inputURL').focusout(function(){
@@ -153,11 +146,14 @@ function getDetail(item){
                 for(var j=0;j<data.data.source.length;j++){
                     _setProgressPecent(ret[j],data.data.source[j])
                     var inc = data.data.source[j].current-currentData.data.source[j].current;
+                    if(isNaN(inc))
+                        inc=0;
                     acc +=inc;
-                    if(data.data.source[j].state == 'done'){
-                        _setProgressSpeed(ret[j],'done');
-                    }else{
+                    var state = data.data.source[j].state;
+                    if(state == 'downloading'){
                         _setProgressSpeed(ret[j],Math.round(inc/1024)+'kbs');
+                    }else{
+                        _setProgressSpeed(ret[j],state);
                     }
                 }
                 speedNode.find('td:eq(1)').text(acc/1024+'kb');

@@ -112,25 +112,30 @@ app.get('/detail',function(req,res){
                     "current": 2966168
                 }
             ]
-        },
-        "status": "init"
+        }
     });
 })
 
 app.get('/video',function(req,res){
     var query = req.query;
     switch(query.state){
-        case 'active':
+        case 'done':
             res.json([
                 {
                     "_id": "abead76d-9fca-427b-a3f6-8c64a097ab3a",
                     "state": "init",
-                    "title": "ppla"
+                    "title": "的啊大洼我",
+                    "folder":"/Users/sankooc/Movies/",
+                    "size":103214123,
+                    "update":"2014.5.12"
                 },
                 {
                     "_id": "abead76d-9fca-427b-a3f6-8ca097ab3a",
                     "state": "init",
-                    "title": "p22ad"
+                    "title": "我说的的撒大帝",
+                    "folder":"/Users/sankooc/Movies/",
+                    "size":103214123,
+                    "update":"2014.5.12"
                 }
             ]);
             break;
