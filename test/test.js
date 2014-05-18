@@ -29,82 +29,80 @@ var qdisk = 'http://1qdisk.com/vod/view.html?idx=24';
 
 
 describe('cateyes', function(){
-
-
     describe('#youku',function(){
         it('url resolver', function(){
           assert.equal(resovler.getProvider(page1), 'youku');
           assert.equal(resovler.getProvider(page2), 'youku');
         });
         it('get metadata',function(done){
-            resovler.getURLMetadata(page1).then(function(data){
-                console.log(data);
-                done();
-                describe('#resource',function(){
-                    it('parse resource',function(done){
-                        var rep ={
-                            'metadata':data,
-                            'parameter':{'type':'flv'}};
-                        resovler.getResource(rep).then(function(_v){
-                            console.log(rep);
-                            done();
-                        });
-                    });
-                })
-            });
-
+            var context ={
+                url:page1
+            }
+            resovler.getURLMetadata(context,function(err,result){
+                console.info(result)
+                done(err)
+            })
+        });
+        it('get resource',function(done){
+            var context ={
+                url:page1
+            }
+            resovler.getResource(context,function(err,result){
+                console.info(context.sources)
+                done(err)
+            })
         });
   });
 
 
-    describe('#Sohu',function(){
-        it('url resolver', function(){
-            assert.equal(resovler.getProvider(sohuSurl), 'sohu');
-        });
-        it('sohu metadata',function(done){
-            resovler.getURLMetadata(sohuSurl).then(function(data){
-                console.log(data);
-                done();
-                describe('#sohu resource',function(){
-                    it('parse resource',function(done){
-                        var rep ={
-                            'metadata':data,
-                            'parameter':{'type':'mp4'}};
-                        resovler.getResource(rep).then(function(_v){
-                            console.log(rep);
-                            done();
-                        },function(err){
-                            console.error(err);
-                            done(err);
-                        });
-                    });
-                })
-            });
-
-        });
-    });
-
-    describe('#Tencent',function(){
-        it('url resolver', function(){
-            assert.equal(resovler.getProvider(tencentUrl), 'tencent');
-        });
-        it('sohu metadata',function(done){
-            resovler.getURLMetadata(tencentUrl).then(function(data){
-                console.log(data);
-                done();
-                describe('#tecent resource',function(){
-                    it('parse resource',function(done){
-                        var rep ={
-                            'metadata':data,
-                            'parameter':{'type':'mp4','title':'fortest'}};
-                        resovler.getResource(rep).then(function(_v){
-                            console.log(rep);
-                            done();
-                        });
-                    });
-                })
-            });
-
-        });
-    });
+//    describe('#Sohu',function(){
+//        it('url resolver', function(){
+//            assert.equal(resovler.getProvider(sohuSurl), 'sohu');
+//        });
+//        it('sohu metadata',function(done){
+//            resovler.getURLMetadata(sohuSurl).then(function(data){
+//                console.log(data);
+//                done();
+//                describe('#sohu resource',function(){
+//                    it('parse resource',function(done){
+//                        var rep ={
+//                            'metadata':data,
+//                            'parameter':{'type':'mp4'}};
+//                        resovler.getResource(rep).then(function(_v){
+//                            console.log(rep);
+//                            done();
+//                        },function(err){
+//                            console.error(err);
+//                            done(err);
+//                        });
+//                    });
+//                })
+//            });
+//
+//        });
+//    });
+//
+//    describe('#Tencent',function(){
+//        it('url resolver', function(){
+//            assert.equal(resovler.getProvider(tencentUrl), 'tencent');
+//        });
+//        it('sohu metadata',function(done){
+//            resovler.getURLMetadata(tencentUrl).then(function(data){
+//                console.log(data);
+//                done();
+//                describe('#tecent resource',function(){
+//                    it('parse resource',function(done){
+//                        var rep ={
+//                            'metadata':data,
+//                            'parameter':{'type':'mp4','title':'fortest'}};
+//                        resovler.getResource(rep).then(function(_v){
+//                            console.log(rep);
+//                            done();
+//                        });
+//                    });
+//                })
+//            });
+//
+//        });
+//    });
 })
