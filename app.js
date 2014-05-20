@@ -3,22 +3,18 @@
  */
 
 
-var redis = require("redis"),
-    async = require('async')
-    resovler = require('./lib/util/providerResolver')
+var redis = require("redis")
+    ,async = require('async')
+    ,HTTPX = require('./lib/httpx')
+    ,ffmpeg = require('./lib/ffmpeg')
+    ,resovler = require('./lib/util/providerResolver')
 
-//var client = redis.createClient();
-//client.subscribe('ms');
-//
-//client.on("message", function (channel, msg) {
-//    console.log(msg)
-//    client.quit()
-//});
+var client = redis.createClient();
 
-function subscript(id){
+function subscript(id,callback){
     var key = 'cit_'+id
         ,context
-        ,metadata,param
+        ,metadata,param,v
     async.auto({
         metadata: function(callback){
             client.hget(key,'metadata',callback)
@@ -39,27 +35,24 @@ function subscript(id){
                 ,type : param.type
             }
             provider.getResource(context,callback)
-        }
-        ]
-    },function(err,result){});
-    client.hget(key,'metadata');
-
-}
-var video = require('./lib/video')
-function download(metadata,param,callback){
-    var context = {
-        vid : metadata.vid
-        ,type : param.type
-    }
-    async.waterfall([
-        async.apply(resovler.getResource,context)
-        ,function(result,callback){
-            var v = new video(metadata,param,context.sources)
-
-        }
-    ],function(error,result){
-
-    });
+        }]
+        ,download :['parse',function(result,callback){
+            v = new video(metadata,param,context.sources)
+            HTTPX.download(v,callback)
+        }]
+        ,merge :['download',function(result,callback){
+            v.setState('done');
+            switch(result.download){
+                case 'complete':
+                    callback()
+                    break;
+                default:
+                    console.log('start concating');
+                    ffmpeg.concat(v,callback);
+                    break
+            }
+        }]
+    },callback);
 }
 
 
