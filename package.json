@@ -29,6 +29,7 @@
     "mkdirp": "~0.3.5",
     "mocha": "*",
     "iconv-lite": "~0.2.11",
-    "socket.io": "~0.9.16"
+    "socket.io": "~0.9.16",
+    "generic-pool": "~2.0.4"
   }
 }

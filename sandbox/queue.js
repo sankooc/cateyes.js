@@ -30,6 +30,9 @@ var server = http.createServer(function (req, res) {
 
     q.push({name:'t1', run: function(cb){
         console.log('t1 is running, waiting tasks: ')
+        process.nextTick(function(){
+            cb(null,'t1 complete')
+        })
     }}, function(err) {
         console.log('t1 executed');
     });
