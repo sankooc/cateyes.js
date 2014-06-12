@@ -2,7 +2,7 @@ var assert = require("assert");
 var resovler = require('./../lib/util/providerResolver');
 
 //var sohuSurl = 'http://tv.sohu.com/20140119/n393765790.shtml';
-var sohuSurl = 'http://tv.sohu.com/209274639/69266447.shtml';
+var sohuSurl = 'http://my.tv.sohu.com/us/209274639/69428621.shtml';
 var youkuUrl = 'http://player.youku.com/player.php/sid/XNjYzNDI5MzAw/v.swf';
 var tencentUrl = 'http://v.qq.com/cover/0/0wzzdnks41m52ve.html';
 var v56Url = 'http://www.56.com/u69/v_ODg5MTIzNTQ.html';
@@ -55,32 +55,20 @@ describe('cateyes', function(){
   });
 
 
-//    describe('#Sohu',function(){
-//        it('url resolver', function(){
-//            assert.equal(resovler.getProvider(sohuSurl), 'sohu');
-//        });
-//        it('sohu metadata',function(done){
-//            resovler.getURLMetadata(sohuSurl).then(function(data){
-//                console.log(data);
-//                done();
-//                describe('#sohu resource',function(){
-//                    it('parse resource',function(done){
-//                        var rep ={
-//                            'metadata':data,
-//                            'parameter':{'type':'mp4'}};
-//                        resovler.getResource(rep).then(function(_v){
-//                            console.log(rep);
-//                            done();
-//                        },function(err){
-//                            console.error(err);
-//                            done(err);
-//                        });
-//                    });
-//                })
-//            });
-//
-//        });
-//    });
+    describe('#Sohu',function(){
+        it('url resolver', function(){
+            assert.equal(resovler.getProvider(sohuSurl), 'sohu');
+        });
+        it('sohu metadata',function(done){
+            var context = {
+                url:sohuSurl
+            }
+            resovler.getURLMetadata(context,function(err,result){
+                console.info(result)
+                done(err)
+            })
+        });
+    });
 //
 //    describe('#Tencent',function(){
 //        it('url resolver', function(){

@@ -1,0 +1,10 @@
+{
+  "name": "cateyes",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "2.0.3",
+    "jquery": "~1.11.0",
+    "messenger":"*"
+  },
+  "devDependencies": {}
+}

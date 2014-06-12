@@ -13,21 +13,21 @@ var folder = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']
 
 var url = 'http://manhua.dmzj.com/xfgj/';
 var baseUrl = 'http://manhua.dmzj.com';
-request(url,function(err,response,body){
-    env(body,function(err,window){
-        var tasks = [];
-        var $ = require('jquery')(window)
-        for(var i =418;i<=418;i++){
-            var name = "第"+i+"话";
-            var subfix =$("a:contains('第"+i+"话')").attr('href');
-            tasks.push(createD(baseUrl+subfix,folder+name+'/'));
-        }
-
-        async.waterfall(tasks,function(err,ret){
-            console.error(err);
-        })
-    })
-});
+//request(url,function(err,response,body){
+//    env(body,function(err,window){
+//        var tasks = [];
+//        var $ = require('jquery')(window)
+//        for(var i =452;i<=452;i++){
+//            var name = "第"+i+"话";
+//            var subfix =$("a:contains('第"+i+"话')").attr('href');
+//            tasks.push(createD(baseUrl+subfix,folder+name+'/'));
+//        }
+//
+//        async.waterfall(tasks,function(err,ret){
+//            console.error(err);
+//        })
+//    })
+//});
 var pre2 = 'http://imgd.dmzj.com/';
 
 function createD(_url,target){
@@ -71,3 +71,12 @@ function download(_url,target){
         }
     });
 }
+
+
+var clademore = 'http://n.kukudm.com/newkuku/2014/201404/20140428/%E6%90%AD%E5%BB%BA150/00103I.jpg'
+
+console.log(decodeURI(clademore))
+
+//request(clademore).pipe(fs.createWriteStream('/Users/sankooc/clademore.jpg'));
+
+

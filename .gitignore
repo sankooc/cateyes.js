@@ -170,3 +170,4 @@ node_modules
 .settings
 .c9revisions
 nocommit.js
+bower_components/
