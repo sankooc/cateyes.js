@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body style="height:100%;overflow: hidden">
+<iframe src="http://www.baidu.com/"  scrolling="no"  style="width: 100%;height:100%;border: 0px;overflow: hidden;"></iframe>
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script>
+    var fm = $('iframe')
+    console.log(fm)
+     fm.find('button').click(function(){
+        var _this = $(this)
+        console.log('hei')
+    })
+//    $.get('http://127.0.0.1:8001/')
+//            .done(function(data) {
+//                console.log(data)
+//            })
+//            .fail(function(err,data){
+//                console.log('err')
+//            })
+//            .always(function() {
+//            });
+
+//var invocation = new XMLHttpRequest();
+//var url = 'http://127.0.0.1:8001/';
+//var handler = function(){
+//
+//}
+//function callOtherDomain() {
+//    if(invocation) {
+//        invocation.open('GET', url, true);
+//        invocation.onreadystatechange = handler;
+//        invocation.send();
+//    }
+//}
+//callOtherDomain()
+</script>
+</body>
+</html>
