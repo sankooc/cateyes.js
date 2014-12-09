@@ -8,7 +8,7 @@ module.exports = function (grunt) {
     ,'src/js/*/*.js'
   ];
 
-  var dest = 'dest';
+  var dest = 'asset';
   var csses = [
     'src/css/*.css'
   ];
@@ -16,38 +16,34 @@ module.exports = function (grunt) {
   grunt.initConfig({
       // Metadata.
       pkg: grunt.file.readJSON('package.json'),
-      banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
-        '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-        '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-        '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-        ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
-
-      less: {
+      banner: '/*! <%= pkg.name %> - v<%= pkg.version %>\n'
+      //,clean: {
+      //  build: {
+      //    src: ['asset/']
+      //  }
+      //}
+      ,copy: {
+        main: {
+          files: [
+            {
+              expand: true,
+              flatten: true,
+              src: ['src/*.html'],
+              dest: 'asset/'
+            }
+          ]
+        }
+      }
+      ,less: {
         compile: {
           options: {
             paths: ['src/css/include']
           },
           files: {
-            'dest/css/main.css': 'src/css/*.less'
+            'asset/css/main.css': 'src/css/*.less'
           }
         }
       }
-      //,dirs: {
-      //  src: 'src/view',
-      //  dest: dest+'/view'
-      //}
-      //,html2js: {
-      //  options: {
-      //    quoteChar: '\'',
-      //    indentString: '    ',
-      //    module: 'ganttTemplates',
-      //    singleModule: true
-      //  },
-      //  main: {
-      //    src: ['src/template/**/*.html'],
-      //    dest: '.tmp/generated/html2js.js'
-      //  }
-      //}
       ,concat_sourcemap: {
         options: {
           banner: '<%= banner %>',
@@ -56,11 +52,26 @@ module.exports = function (grunt) {
         }
         ,script: {
           files: {
-            'dest/js/app.js': dep
+            'asset/js/app.js': dep
+          }
+        }
+      }
+      ,coffee: {
+        compile: {
+          options: {
+            join:true,
+            sourceMap: true
+          },
+          files: {
+            'asset/js/app.js': ['src/*.coffee', 'src/*/*.coffee']
           }
         }
       }
       ,watch: {
+        html : {
+          files:'src/*.html',
+          tasks:['copy:main']
+        },
         jsfile: {
           files: 'src/js/*.js',
           tasks: ['concat_sourcemap:script']
@@ -68,6 +79,11 @@ module.exports = function (grunt) {
         ,jsfile2: {
           files: 'src/js/*/*.js',
           tasks: ['concat_sourcemap:script']
+        }
+        ,coffee : {
+          files: ['src/*.coffee','src/*/*.coffee'],
+          tasks: ['coffee:compile']
+
         }
         ,css: {
           files: 'src/css/*.less',
@@ -80,17 +96,11 @@ module.exports = function (grunt) {
   ;
 
 // These plugins provide necessary tasks.
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-concat-sourcemap');
-//  grunt.loadNpmTasks('grunt-contrib-concat');
-// grunt.loadNpmTasks('grunt-contrib-uglify');
-// grunt.loadNpmTasks('grunt-contrib-nodeunit');
-// grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-coffee');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  //grunt.loadNpmTasks('grunt-html2js');
-//  grunt.loadNpmTasks('grunt-css');
-// Default task.
-// grunt.registerTask('default', ['jshint', 'nodeunit', 'concat', 'uglify']);
-  grunt.registerTask('default', ['less','concat_sourcemap', 'watch']);
+  grunt.registerTask('default', ['copy','less','concat_sourcemap','coffee', 'watch']);
 }
 ;

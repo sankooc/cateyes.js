@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" ng-app="app">
+<head>
+    <title>Cateye</title>
+    <link href="vendor/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="vendor/bootstrap-material-design/dist/css/material.css" rel="stylesheet">
+    <link href="vendor/bootstrap-material-design/dist/css/ripples.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap-material-design/dist/css/material-wfont.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="navbar navbar-default">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="javascript:void(0)">Cateyes</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+            <ul class="nav nav-pills nav-stacked">
+                <li class="active"><a href="javascript:void(0)" data-toggle="tab">All</a></li>
+                <li><a href="javascript:void(0)" data-toggle="tab">Queue</a></li>
+                <li><a href="javascript:void(0)" data-toggle="tab">Downloading</a></li>
+                <li><a href="javascript:void(0)" data-toggle="tab">Done</a></li>
+            </ul>
+        </div>
+        <div class="col-md-10">
+            <div class="col-sm-6 col-md-4" ng-repeat="v in videos">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <button type="button" class="close" ng-click="removeVideo(v)">×</button>
+                            <h4 class="modal-title" ng-bind="v.title"/>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="caption">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td>subfix</td>
+                                    <td ng-bind="v.prefix"></td>
+                                </tr>
+                                <tr>
+                                    <td>length</td>
+                                    <td ng-bind="v.size"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <button class="btn btn-default" style="padding: 5px 5px"><i class="mdi-action-autorenew"></i></button>
+                            <button class="btn btn-default" style="padding: 5px 5px"><i class="mdi-action-get-app"></i></button>
+                        </div>
+
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-success" ng-style="{width: v.progress+'%'}">{{v.progress}}%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4">
+                <button class="btn btn-default btn-raised" ng-click="addVideo()">
+                    <i class="mdi-content-add" style="font-size: 150px;"></i>
+                </button>
+                <!--<div class="panel panel-primary">-->
+                    <!--<div class="panel panel-primary">-->
+                        <!--<div class="panel-body">-->
+                            <!--<div class="icon-preview" style="text-align: center;height:120px">-->
+                                <!--<i class="mdi-content-add" style="font-size: 120px;"></i>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="vendor/jquery/dist/jquery.min.js"></script>
+<script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="vendor/angular/angular.js"></script>
+<script src="vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="vendor/bootstrap-material-design/dist/js/material.min.js"></script>
+<script src="vendor/bootstrap-material-design/dist/js/ripples.min.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

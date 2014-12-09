@@ -1,0 +1,115 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="$close()" aria-hidden="true">×</button>
+    <h4 class="modal-title">Create a download task</h4>
+  </div>
+  <div class="modal-body">
+    <form class="form-horizontal" id="vid" ng-submit="createVod()">
+      <fieldset>
+        <div class="form-group">
+          <label class="col-lg-2 control-label">Type</label>
+
+          <div class="col-lg-10">
+            <div class="radio radio-primary" ng-repeat="_t in types" for="{{ _t }}">
+              <label>
+                <input type="radio"
+                       name="optionsRadios"
+                       ng-model="option.type"
+                       ng-value="_t"
+                       id="{{_t}}">
+                <span class="circle"></span>
+                <span class="check"></span>
+                {{_t}}
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" ng-if="option.type==='url'">
+          <label class="col-lg-2 control-label">URL</label>
+
+          <div class="col-lg-10">
+            <div class="form-control-wrapper">
+              <input type="url" class="form-control empty" ng-model="option.url">
+              <span class="material-input"></span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" ng-if="option.type==='vid'">
+          <label class="col-lg-2 control-label">vid</label>
+
+          <div class="col-lg-10">
+            <div class="form-control-wrapper">
+              <input type="url" class="form-control empty" ng-model="option.vid">
+              <span class="material-input"></span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" ng-if="option.type==='vid'">
+          <label class="col-lg-2 control-label">Provider:</label>
+          <div class="col-lg-10">
+            <div class="form-control-wrapper">
+              <select class="form-control" ng-model="option.province_id" ng-options="provider.id as provider.name for provider in providers">
+              </select>
+              <span class="material-input"></span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-group" ng-if="option.type === 'url'">
+          <label class="col-lg-2 control-label">Target</label>
+
+          <div class="col-lg-10">
+            <div class="form-control-wrapper">
+              <input type="text" class="form-control empty" required>
+              <span class="material-input"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-2 control-label">Concat Video</label>
+          <div class="col-lg-10" style="top:6px">
+            <div class="form-control-wrapper">
+              <div class="togglebutton">
+                <label>
+                  <input type="checkbox" checked="">
+                  <span class="toggle">
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-2 control-label">title</label>
+          <div class="col-lg-10">
+            <div class="form-control-wrapper">
+              <input type="url" class="form-control empty" ng-model="param.title">
+              <span class="material-input"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-2 control-label">Quality</label>
+
+          <div class="col-lg-10">
+            <div class="form-control-wrapper"><select multiple="" class="form-control empty">
+              <option selected>flv</option>
+              <option>mega-4</option>
+              <option>hd</option>
+            </select><span class="material-input"></span></div>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <div class="col-lg-10 col-lg-offset-2">
+      <button class="btn btn-default" ng-click="$close()">Cancel</button>
+      <button type="submit" class="btn btn-primary" form="vid">Submit</button>
+    </div>
+  </div>
+</div>

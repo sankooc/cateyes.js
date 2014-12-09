@@ -171,3 +171,6 @@ node_modules
 .c9revisions
 nocommit.js
 bower_components/
+vendor/
+asset/
+npm-debug.log
