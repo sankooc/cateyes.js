@@ -1,10 +1,11 @@
-angular.module("app", ['ui.bootstrap']).run ($rootScope,$modal)->
+angular.module("app", ['ui.bootstrap']).run ($rootScope,$modal,videoService)->
   $rootScope.videos = [
       title:'broke girls E03'
       ,prefix:'mega-4'
       ,progress : 90
       ,size : 1003453
   ];
+
   $rootScope.removeVideo = ->
     _self = this.v;
     option =
@@ -42,6 +43,10 @@ angular.module("app", ['ui.bootstrap']).run ($rootScope,$modal)->
       size: 'lg'
     instance = $modal.open option
 
+    _scope.getMetadata = ->
+      console.log 'metadata'
+      videoService.metadata(option).then (metadata)->
+        _scope.param = _.clone metadata
     _scope.createVod = ->
       console.log _scope.option
       $rootScope.videos.push

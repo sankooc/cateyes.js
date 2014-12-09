@@ -7,7 +7,7 @@ module.exports = function (grunt) {
     'src/js/*.js'
     ,'src/js/*/*.js'
   ];
-
+  
   var dest = 'asset';
   var csses = [
     'src/css/*.css'
@@ -59,11 +59,10 @@ module.exports = function (grunt) {
       ,coffee: {
         compile: {
           options: {
-            join:true,
             sourceMap: true
           },
           files: {
-            'asset/js/app.js': ['src/*.coffee', 'src/*/*.coffee']
+            'asset/js/app.js': ['src/js/*.coffee', 'src/js/*/*.coffee']
           }
         }
       }
@@ -81,7 +80,7 @@ module.exports = function (grunt) {
           tasks: ['concat_sourcemap:script']
         }
         ,coffee : {
-          files: ['src/*.coffee','src/*/*.coffee'],
+          files: ['src/js/*.coffee','src/js/*/*.coffee'],
           tasks: ['coffee:compile']
 
         }

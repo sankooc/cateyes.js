@@ -1,6 +1,6 @@
 <div class="modal-content panel-warning">
   <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <button type="button" class="close" ng-click="$close(false)" aria-hidden="true">×</button>
     <h4 class="modal-title">Are you sure?</h4>
   </div>
   <div class="modal-body">
@@ -8,7 +8,16 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="$close(false)">Cancel</button>
-    <button type="button" class="btn btn-danger" ng-click="$close(true)">Delete</button>
+    <button class="btn btn-default" ng-click="$close(false)">
+      <i class="mdi-navigation-close"></i>
+      Cancel
+      <div class="ripple-wrapper"></div>
+    </button>
+    <button class="btn btn-danger" ng-click="$close(true)">
+      <i class="mdi-navigation-check"></i>
+      Delete
+      <div class="ripple-wrapper">
+      </div>
+    </button>
   </div>
 </div>
