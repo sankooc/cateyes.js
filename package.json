@@ -24,7 +24,8 @@
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-contrib-watch": "~0.4.0",
     "grunt-css": "^0.5.4",
-    "grunt-html2js": "^0.2.9"
+    "grunt-html2js": "^0.2.9",
+    "grunt-http-server": "^1.1.0"
   },
   "dependencies": {
     "async": "~0.4.0",

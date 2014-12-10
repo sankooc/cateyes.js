@@ -66,6 +66,23 @@ module.exports = function (grunt) {
           }
         }
       }
+      ,'http-server':{
+        dev: {
+            // the server root directory
+            root: 'asset/',
+            port: 8001,
+            // port: function() { return 8282; }
+            host: "127.0.0.1",
+            cache: 1000,
+            showDir : true,
+            autoIndex: true,
+            // server default file extension
+            ext: "html",
+            // run in parallel with other tasks
+            runInBackground: true
+        }
+
+    }
       ,watch: {
         html : {
           files:'src/*.html',
@@ -99,7 +116,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-concat-sourcemap');
   grunt.loadNpmTasks('grunt-contrib-coffee');
+  grunt.loadNpmTasks('grunt-http-server');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.registerTask('default', ['copy','less','concat_sourcemap','coffee', 'watch']);
+  grunt.registerTask('default', ['copy','less','concat_sourcemap','coffee','http-server','watch']);
 }
 ;
