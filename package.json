@@ -4,7 +4,7 @@
   "description": "video stream resolver",
   "main": "web.js",
   "scripts": {
-    "test": "mocha"
+    "test": ""
   },
   "keywords": [
     "flv"
