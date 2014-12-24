@@ -1,7 +1,7 @@
 /**
  * Created by sankooc on 14-7-9.
  */
-var sohu = require('../lib/album/sohu')
+var sohu = require('../server/album/sohu')
 
 
 var context = {
