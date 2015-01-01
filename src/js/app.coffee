@@ -1,5 +1,6 @@
 angular.module("app", [
   'ui.bootstrap',
+#  'ui.bootstrap.pagination',
   'angularBootstrapNavTree',
   "ngSanitize",
   "com.2fdevs.videogular",
@@ -7,12 +8,7 @@ angular.module("app", [
   "com.2fdevs.videogular.plugins.overlayplay",
   "com.2fdevs.videogular.plugins.poster",
   "com.2fdevs.videogular.plugins.buffering"
-])
-.config ($sceDelegateProvider)->
-  $sceDelegateProvider.resourceUrlWhitelist [
-    'file://**'
-  ]
-.run ($rootScope,$modal,$http,videoService,$sce)->
+]).run ($rootScope,$modal,$http,videoService,$sce)->
   $rootScope.videos = [
       title:'broke girls E03'
       ,prefix:'mega-4'
@@ -86,7 +82,7 @@ angular.module("app", [
           nav.children.push(
             label : chap.title
             onSelect : playVideo
-            path : encodeURI(item.title)+'/'+encodeURI(chap.title+'/')
+            path : encodeURIComponent(item.title)+'/'+encodeURIComponent(chap.title)+'/'
             item : chap
           )
         $rootScope.filedata.push nav
@@ -105,47 +101,52 @@ angular.module("app", [
     if controller.API.currentState == 'play' || controller.isCompleted
       controller.API.play()
     controller.isCompleted = false
+    true
 
   controller.onCompleteVideo = ->
     controller.isCompleted = true
     controller.currentVideo++
+    console.log('complete'+controller.currentVideo);
     if controller.currentVideo >= controller.videos.length
       controller.currentVideo = 0
     controller.setVideo controller.currentVideo
 
-  controller.videos = [
-    {
-      sources: [
-        {src: '%E1%84%86%E1%85%AE%E1%84%92%E1%85%A1%E1%86%AB%E1%84%83%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB:%20Season%20381%20Clips/Infinite%20Challenge,%20Vote%202014%20(5)%20#01%20%E1%84%89%E1%85%A5%E1%86%AB%E1%84%90%E1%85%A2%E1%86%A8%202014%20(5)%2020140531-lqDffvLCsdc.mp4', type: "video/mp4"},
-       ]
-    }
-  ];
+  controller.videos = [];
 
   controller.config = {
     preload: "metadata"
     autoHide: false
     autoHideTime: 3000
     autoPlay: false
-    sources: controller.videos[0].sources,
     theme: {
       url: "vendor/videogular-themes-default/videogular.css"
     }
   };
 
   controller.setVideo =(index)->
-    controller.API.stop();
     controller.currentVideo = index;
-    controller.config.source = controller.videos[index].source;
+    controller.config.sources = controller.videos[index];
 
 
   playVideo = ()->
     console.log this
     controller.rootPath = this.path
     controller.videos = []
+    $rootScope.clips = this.item.clips
+    $rootScope.bigTotalItems = this.item.clips.length
     _.each this.item.clips,(clip)->
-#      console.log '/file/'+controller.rootPath+clip
-      controller.videos.push('/file/'+controller.rootPath+encodeURI(clip))
-    controller.currentVideo = 0;
-    controller.config.source = controller.videos[0];
-    $rootScope.$apply()
-    console.log controller.config.source
+      controller.videos.push([{
+        src : '/file/'+controller.rootPath+encodeURIComponent(clip)
+        type: "video/mp4"
+      }])
+    controller.currentVideo = 1
+    controller.config.sources = controller.videos[0]
+
+  $rootScope.$watch 'controller.currentVideo',(index)->
+    console.log('currentpage'+index)
+    controller.config.sources = controller.videos[index-1];
+
+  $rootScope.totalItems = 1
+  $rootScope.maxSize = 10
+  $rootScope.bigTotalItems = 0
+  $rootScope.currentpage = 1

@@ -31,7 +31,7 @@
         </div>
         <div class="col-md-9">
             <div>
-                <videogular vg-player-ready="controller.onPlayerReady" vg-complete="controller.onCompleteVideo" vg-theme="controller.config.theme.url">
+                <videogular vg-autoplay="true" vg-player-ready="controller.onPlayerReady" vg-complete="controller.onCompleteVideo" vg-theme="controller.config.theme.url">
                     <vg-video vg-src="controller.config.sources"
                               vg-tracks="controller.config.tracks" vg-preload="controller.config.preload">
                     </vg-video>
@@ -55,16 +55,13 @@
                     <vg-poster-image vg-url='controller.config.plugins.poster'></vg-poster-image>
                 </videogular>
             </div>
-            <div class="playlist">
-                <ul>
-                    <li><a ng-click="controller.setVideo(0)">Pale Blue Dot</a></li>
-                    <li><a ng-click="controller.setVideo(1)">Big Buck Bunny</a></li>
-                </ul>
-            </div>
-            <!--<video class="col-md-9 video-js vjs-default-skin" controls preload="metadata"-->
-                   <!--data-setup="{}" ng-if="videoSource">-->
-                <!--<source ng-src="videoSource" type='video/mp4'/>-->
-            <!--</video>-->
+            <pagination ng-if="bigTotalItems" total-items="bigTotalItems" ng-model="controller.currentVideo" items-per-page="1" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages"></pagination>
+            <!--<pre>Page: {{currentPage}} / {{numPages}}</pre>-->
+            <!--<div class="playlist">-->
+                <!--<ul>-->
+                    <!--<li ng-repeat="clip in clips"><a ng-click="controller.setVideo($index)" ng-bind="clip"></a></li>-->
+                <!--</ul>-->
+            <!--</div>-->
         </div>
     </div>
     <div role="tabpanel" class="tab-pane fade row" id="tasks">
@@ -131,6 +128,9 @@
 <script src="vendor/underscore/underscore.js"></script>
 <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="vendor/angular/angular.js"></script>
+<script src="vendor/angular-bootstrap/ui-bootstrap.js"></script>
+<script src="vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="vendor/angular-bootstrap-nav-tree/dist/abn_tree_directive.js"></script>
 
 <script src="vendor/angular-sanitize/angular-sanitize.min.js"></script>
 <script src="vendor/videogular/videogular.js"></script>
@@ -140,8 +140,7 @@
 <script src="vendor/videogular-buffering/buffering.js"></script>
 
 <script src="vendor/video.js/dist/video-js/video.js"></script>
-<script src="vendor/angular-bootstrap-nav-tree/dist/abn_tree_directive.js"></script>
-<script src="vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<!--<script src="vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>-->
 <script src="vendor/bootstrap-material-design/dist/js/material.min.js"></script>
 <script src="vendor/bootstrap-material-design/dist/js/ripples.min.js"></script>
 <script src="js/app.js"></script>
