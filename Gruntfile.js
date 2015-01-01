@@ -118,6 +118,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-coffee');
   grunt.loadNpmTasks('grunt-http-server');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.registerTask('default', ['copy','less','concat_sourcemap','coffee','http-server','watch']);
+  grunt.registerTask('default', ['copy','less','concat_sourcemap','coffee','watch']);
 }
 ;

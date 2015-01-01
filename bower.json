@@ -9,7 +9,10 @@
     "bootstrap": "~3.3.1",
     "bootstrap-material-design": "~0.2.1",
     "angular-bootstrap": "~0.12.0",
-    "underscore": "~1.7.0"
+    "underscore": "~1.7.0",
+    "ngvideo": "~0.4.13",
+    "videogular": "~0.7.2",
+    "videogular-themes-default": "~0.7.2"
   },
   "devDependencies": {}
 }

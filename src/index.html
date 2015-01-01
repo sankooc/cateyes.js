@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" ng-app="app">
 <head>
     <title>Cateye</title>
     <link href="vendor/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="vendor/angular-bootstrap-nav-tree/dist/abn_tree.css" rel="stylesheet">
+    <link href="vendor/video.js/dist/video-js/video-js.css" rel="stylesheet">
     <link href="vendor/bootstrap-material-design/dist/css/material.css" rel="stylesheet">
     <link href="vendor/bootstrap-material-design/dist/css/ripples.min.css" rel="stylesheet">
     <link href="vendor/bootstrap-material-design/dist/css/material-wfont.min.css" rel="stylesheet">
@@ -16,10 +18,56 @@
     <div class="navbar-header">
         <a class="navbar-brand" href="javascript:void(0)">Cateyes</a>
     </div>
+    <ul class="nav navbar-nav" role="tablist">
+        <li role="presentation" class="active"><a id="video_tab" data-toggle="tab" href="#videos">Videos</a></li>
+        <li role="presentation"><a id="task_tab" data-toggle="tab" href="#tasks">Task</a></li>
+    </ul>
 </div>
 
 <div class="container">
-    <div class="row">
+    <div role="tabpanel" class="tab-pane fade row active in" id="videos">
+        <div class="col-md-3">
+            <abn-tree tree-data="filedata"></abn-tree>
+        </div>
+        <div class="col-md-9">
+            <div>
+                <videogular vg-player-ready="controller.onPlayerReady" vg-complete="controller.onCompleteVideo" vg-theme="controller.config.theme.url">
+                    <vg-video vg-src="controller.config.sources"
+                              vg-tracks="controller.config.tracks" vg-preload="controller.config.preload">
+                    </vg-video>
+
+                    <vg-controls >
+                        <vg-play-pause-button></vg-play-pause-button>
+                        <vg-timedisplay>{{ currentTime | date:'mm:ss' }}</vg-timedisplay>
+                        <vg-scrubBar>
+                            <vg-scrubbarcurrenttime></vg-scrubbarcurrenttime>
+                        </vg-scrubBar>
+                        <vg-timedisplay>{{ timeLeft | date:'mm:ss' }}</vg-timedisplay>
+                        <vg-volume>
+                            <vg-mutebutton></vg-mutebutton>
+                            <vg-volumebar></vg-volumebar>
+                        </vg-volume>
+                        <vg-fullscreenButton></vg-fullscreenButton>
+                    </vg-controls>
+
+                    <vg-overlay-play></vg-overlay-play>
+                    <vg-buffering></vg-buffering>
+                    <vg-poster-image vg-url='controller.config.plugins.poster'></vg-poster-image>
+                </videogular>
+            </div>
+            <div class="playlist">
+                <ul>
+                    <li><a ng-click="controller.setVideo(0)">Pale Blue Dot</a></li>
+                    <li><a ng-click="controller.setVideo(1)">Big Buck Bunny</a></li>
+                </ul>
+            </div>
+            <!--<video class="col-md-9 video-js vjs-default-skin" controls preload="metadata"-->
+                   <!--data-setup="{}" ng-if="videoSource">-->
+                <!--<source ng-src="videoSource" type='video/mp4'/>-->
+            <!--</video>-->
+        </div>
+    </div>
+    <div role="tabpanel" class="tab-pane fade row" id="tasks">
         <div class="col-md-2">
             <ul class="nav nav-pills nav-stacked">
                 <li class="active"><a href="javascript:void(0)" data-toggle="tab">All</a></li>
@@ -66,13 +114,13 @@
                     <i class="mdi-content-add" style="font-size: 150px;"></i>
                 </button>
                 <!--<div class="panel panel-primary">-->
-                    <!--<div class="panel panel-primary">-->
-                        <!--<div class="panel-body">-->
-                            <!--<div class="icon-preview" style="text-align: center;height:120px">-->
-                                <!--<i class="mdi-content-add" style="font-size: 120px;"></i>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
+                <!--<div class="panel panel-primary">-->
+                <!--<div class="panel-body">-->
+                <!--<div class="icon-preview" style="text-align: center;height:120px">-->
+                <!--<i class="mdi-content-add" style="font-size: 120px;"></i>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</div>-->
                 <!--</div>-->
             </div>
 
@@ -83,6 +131,16 @@
 <script src="vendor/underscore/underscore.js"></script>
 <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="vendor/angular/angular.js"></script>
+
+<script src="vendor/angular-sanitize/angular-sanitize.min.js"></script>
+<script src="vendor/videogular/videogular.js"></script>
+<script src="vendor/videogular-controls/controls.js"></script>
+<script src="vendor/videogular-overlay-play/overlay-play.js"></script>
+<script src="vendor/videogular-poster/poster.js"></script>
+<script src="vendor/videogular-buffering/buffering.js"></script>
+
+<script src="vendor/video.js/dist/video-js/video.js"></script>
+<script src="vendor/angular-bootstrap-nav-tree/dist/abn_tree_directive.js"></script>
 <script src="vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 <script src="vendor/bootstrap-material-design/dist/js/material.min.js"></script>
 <script src="vendor/bootstrap-material-design/dist/js/ripples.min.js"></script>
