@@ -119,7 +119,7 @@ angular.module("app", [
     autoHideTime: 3000
     autoPlay: false
     theme: {
-      url: "vendor/videogular-themes-default/videogular.css"
+      url: "../vendor/videogular-themes-default/videogular.css"
     }
   };
 

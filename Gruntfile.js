@@ -28,8 +28,14 @@ module.exports = function (grunt) {
             {
               expand: true,
               flatten: true,
-              src: ['src/*.html'],
-              dest: 'asset/'
+              src: ['src/main/*.html'],
+              dest: 'asset/main/'
+            }
+            ,{
+              expand: true,
+              flatten: true,
+              src: ['src/mobile/*.html'],
+              dest: 'asset/mobile/'
             }
           ]
         }

@@ -173,4 +173,5 @@ nocommit.js
 bower_components/
 vendor/
 asset/
+mobile
 npm-debug.log

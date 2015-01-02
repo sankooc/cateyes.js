@@ -12,7 +12,8 @@
     "underscore": "~1.7.0",
     "ngvideo": "~0.4.13",
     "videogular": "~0.7.2",
-    "videogular-themes-default": "~0.7.2"
+    "videogular-themes-default": "~0.7.2",
+    "mobile-angular-ui": "~1.2.0-beta.11"
   },
   "devDependencies": {}
 }

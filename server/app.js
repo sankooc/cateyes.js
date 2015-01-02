@@ -13,22 +13,30 @@ var homeRoot = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME
 
 var resolver = new Resolve();
 app.set('port', process.env.PORT || 8001);
-app.use(express.logger('dev'));
+//app.use(express.logger('dev'));
 app.use(express.json());
 //app.use(express.urlencoded());
 //app.use(express.methodOverride());
-console.log(__dirname + '/../asset/');
+//console.log(__dirname + '/../asset/');
 app.use('/',express.static(__dirname + '/../asset/'));
 app.use('/file',express.static(homeRoot))
-app.use(function(err, req, res, next){
-  console.error(err.stack);
-  res.send(500, 'Something broke!');
-});
+//app.use(function(err, req, res, next){
+//  console.error(err.stack);
+//  res.send(500, 'Something broke!');
+//});
 
 app.use(express.favicon(__dirname+'/favicon.ico'));
 app.get('/', function(req, res){
-  console.log('redirect');
-  res.redirect('/index.htm');
+  var userAgent = req.get('user-agent');
+  if(userAgent.indexOf('iPhone')>=0){
+    console.log('iphone');
+    res.redirect('/mobile');
+  }else{
+    console.log('redirect');
+    res.redirect('/main');
+  }
+  //console.log(req.headers);
+  //res.redirect('/public');
 });
 
 app.get('/api/files',function(req,res){
