@@ -27,27 +27,20 @@ module.exports = function (grunt) {
           files: [
             {
               expand: true,
-              flatten: true,
-              src: ['src/main/*.html'],
-              dest: 'asset/main/'
-            }
-            ,{
-              expand: true,
-              flatten: true,
-              src: ['src/mobile/*.html'],
-              dest: 'asset/mobile/'
+              cwd: 'src/',
+              src: ['mobile/**','main/**'],
+              dest: 'asset/'
             }
           ]
         }
       }
       ,less: {
         compile: {
-          options: {
-            paths: ['src/css/include']
-          },
-          files: {
-            'asset/css/main.css': 'src/css/*.less'
-          }
+          files: [{
+            'asset/css/main.css': 'src/less/main/*.less'
+          },{
+            'asset/css/mobile.css': 'src/less/mobile/*.less'
+          }]
         }
       }
       ,concat_sourcemap: {
@@ -65,11 +58,15 @@ module.exports = function (grunt) {
       ,coffee: {
         compile: {
           options: {
-            sourceMap: true
+            sourceMap: false
           },
-          files: {
-            'asset/js/app.js': ['src/js/*.coffee', 'src/js/*/*.coffee']
-          }
+          files:
+            {
+              'asset/js/app.js': ['src/js/main/*.coffee', 'src/js/main/*/*.coffee']
+              ,'asset/js/mobile.js': ['src/js/mobile/*.coffee', 'src/js/mobile/*/*.coffee']
+            }
+            //{'asset/js/mobile.js': ['src/js/mobile/*.coffee', 'src/js/mobile/*/*.coffee']}
+
         }
       }
       ,'http-server':{
@@ -91,24 +88,19 @@ module.exports = function (grunt) {
     }
       ,watch: {
         html : {
-          files:'src/*.html',
+          files:['src/mobile/**','src/main/**'],
           tasks:['copy:main']
         },
         jsfile: {
-          files: 'src/js/*.js',
-          tasks: ['concat_sourcemap:script']
-        }
-        ,jsfile2: {
-          files: 'src/js/*/*.js',
+          files: ['src/js/*/*.js','src/js/*/*/*.js'],
           tasks: ['concat_sourcemap:script']
         }
         ,coffee : {
-          files: ['src/js/*.coffee','src/js/*/*.coffee'],
+          files: ['src/js/*/*.coffee','src/js/*/*/*.coffee'],
           tasks: ['coffee:compile']
-
         }
         ,css: {
-          files: 'src/css/*.less',
+          files: 'src/less/*/*.less',
           tasks: ['less:compile']
         }
       }

@@ -13,7 +13,9 @@
     "ngvideo": "~0.4.13",
     "videogular": "~0.7.2",
     "videogular-themes-default": "~0.7.2",
-    "mobile-angular-ui": "~1.2.0-beta.11"
+    "mobile-angular-ui": "~1.2.0-beta.11",
+    "angular-route": "~1.3.8",
+    "ionic": "https://github.com/driftyco/ionic.git#~0.9.27"
   },
   "devDependencies": {}
 }

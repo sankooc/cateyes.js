@@ -38,23 +38,27 @@ FileResolver.prototype.parse = function(callback){
     root : 'file:///'+self.root,
     albums : []
   };
+  var index = 0;
   var albums = readList(self.root,true);
   albums.forEach(function(title){
     var album = {
+      index : index++,
       title : title,
       chapters : []
     };
     result.albums.push(album);
 
     var chapters = readList(self.root+album.title+'/',true);
+    var _index = 0;
     chapters.forEach(function(chapter){
       album.chapters.push({
+        index:_index++,
         title:chapter,
         clips:readList(self.root+album.title+'/'+chapter+'/',false)
       });
     });
   });
-  console.log(JSON.stringify(result));
+  console.log(result);
   if(callback){
     callback(null,result);
   }
