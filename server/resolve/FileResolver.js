@@ -1,8 +1,7 @@
 /**
  * Created by sankooc on 1/1/15.
  */
-var fs = require('fs')
-
+var fs = require('fs');
 if (!String.prototype.endsWith) {
   Object.defineProperty(String.prototype, 'endsWith', {
     value: function(searchString, position) {
@@ -35,30 +34,23 @@ function FileResolver(){
 FileResolver.prototype.parse = function(callback){
   var self = this;
   var result = {
-    root : 'file:///'+self.root,
-    albums : []
-  };
-  var index = 0;
-  var albums = readList(self.root,true);
-  albums.forEach(function(title){
-    var album = {
-      index : index++,
-      title : title,
-      chapters : []
-    };
-    result.albums.push(album);
 
-    var chapters = readList(self.root+album.title+'/',true);
-    var _index = 0;
-    chapters.forEach(function(chapter){
-      album.chapters.push({
-        index:_index++,
-        title:chapter,
-        clips:readList(self.root+album.title+'/'+chapter+'/',false)
+  };
+  var albums = readList(self.root,true);
+  albums.forEach(function(album_title){
+    var chapters = readList(self.root+album_title+'/',true);
+    chapters.forEach(function(chapter_title){
+      var clips = readList(self.root+album_title+'/'+chapter_title+'/',false);
+      clips.forEach(function(clip){
+        var obj = parse_title(clip,chapter_title);
+        if(obj.time && obj.title && obj.fragment){
+        }else{
+          //
+        }
       });
     });
   });
-  console.log(result);
+  //console.log(result);
   if(callback){
     callback(null,result);
   }
@@ -66,5 +58,52 @@ FileResolver.prototype.parse = function(callback){
 
 module.exports  = FileResolver;
 
+
+
+var reg_mt = /^([\s\S]+).part$/;
+var reg_parser = /([\s\S]+)\s+#,?(\d{2}),?\s+([\S\s]+)\s+(\d{8}|\d{6})-[\S]{11}\.mp4$/;
+var reg_parser2 = /[\s\S]+,\s?([\s\S]*),\s?#,?(\d{2}),?-[\S]{11}\.mp4$/;
+var reg_cha = /(\d{6}|\d{8})_[\s\S]+/;
+
+function parse_title(title,chapter){
+  var result = {
+    complete : true
+  };
+  var m = title.match(reg_mt);
+  if(m){
+    result.complete =false;
+    title = m[1];
+  }
+  m = title.match(/^([\s\S]+)-[\S]{11}\.mp4$/);
+  if(m){
+    title = m[1]
+  }
+  m = title.match(/^([\s\S]+)\s(\d{6}|\d{8})$/);
+  if(m){
+    title = m[1];
+    result.time = m[2];
+  }
+  m = title.match(/([\s\S]+)#,?(\d{2})[,\s]*([\s\S]*)$/);
+  if(m){
+    title = m[1];
+    result.fragment = m[2];
+    if(m[3].trim()){
+      result.title = m[3].trim();
+    }else{
+      m = title.match(/([\s\S]+),\s*([\s\S]{2,}),\s$/);
+      if(m){
+        result.title = m[2].trim();
+      }
+    }
+  }
+  if(!result.time && chapter){
+    m = chapter.match(/(\d{6}|\d{8})/);
+    if(m){
+      result.time = m[1];
+    }
+  }
+  return result;
+}
+
 //var k =new FileResolver();
-//k.parse()
+//k.parse();
