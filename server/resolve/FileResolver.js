@@ -15,10 +15,37 @@ if (!String.prototype.endsWith) {
     }
   });
 }
+if (!String.prototype.startsWith) {
+  Object.defineProperty(String.prototype, 'startsWith', {
+    enumerable: false,
+    configurable: false,
+    writable: false,
+    value: function(searchString, position) {
+      position = position || 0;
+      return this.lastIndexOf(searchString, position) === position;
+    }
+  });
+}
+
+function readSuffix(path,dir,suffix){
+  var list = fs.readdirSync(path);
+  var result = [];
+  list.forEach(function(item){
+    if(item.indexOf('.') === 0) return;
+    if(suffix){
+      if(!item.endsWith(suffix)) return;
+    }
+    var state = fs.statSync(path+item);
+    if(state.isDirectory() ^ dir) return;
+    result.push(item);
+  });
+  return result;
+}
 function readList(path,dir){
   var list = fs.readdirSync(path);
   var result = [];
   list.forEach(function(item){
+    if(item.indexOf('.') === 0) return;
     var state = fs.statSync(path+item);
     if(state.isDirectory() ^ dir) return
     if(state.isFile() && !item.endsWith('.mp4')) return
@@ -28,8 +55,20 @@ function readList(path,dir){
 }
 
 function FileResolver(){
-  this.root = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/Movies/Cateyes/';
+  this.root = "/Volumes/mok/";
 }
+
+FileResolver.prototype.albums = function(){
+  return readList(this.root,true);
+};
+
+FileResolver.prototype.chapters = function(album){
+  return readList(this.root+album+'/',true);
+};
+
+FileResolver.prototype.clips = function(album,chapter){
+  return readList(this.root+album+'/'+chapter+'/',false);
+};
 
 FileResolver.prototype.parse = function(callback){
   var self = this;
@@ -104,6 +143,3 @@ function parse_title(title,chapter){
   }
   return result;
 }
-
-//var k =new FileResolver();
-//k.parse();

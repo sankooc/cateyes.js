@@ -9,7 +9,8 @@ var express = require('express');
 var app = express();
 var Resolve = require('./resolve/FileResolver');
 
-var homeRoot = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/Movies/Cateyes/';
+// var homeRoot = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/Movies/Cateyes/';
+var homeRoot= "/Volumes/mok/"
 
 var resolver = new Resolve();
 app.set('port', process.env.PORT || 8001);
@@ -28,8 +29,8 @@ app.use('/file',express.static(homeRoot))
 app.use(express.favicon(__dirname+'/favicon.ico'));
 app.get('/', function(req, res){
   var userAgent = req.get('user-agent');
-  if(userAgent.indexOf('iPhone')>=0){
-    console.log('iphone');
+  if(userAgent.indexOf('iPhone')>=0 || userAgent.indexOf('android')>=0){
+    //console.log('iphone');
     res.redirect('/mobile');
   }else{
     console.log('redirect');
@@ -44,73 +45,15 @@ app.get('/api/files',function(req,res){
     res.json(data);
   });
 });
+app.get('/api/albums',function(req,res){
+  res.json(resolver.albums());
+});
+app.get('/api/albums/:album',function(req,res){
+  res.json(resolver.chapters(req.params.album));
+});
 
-//app.post('/file',function(req,res){
-//  var body = req.body;
-//  console.log(body)
-//  res.json({});
-//});
-
-//app.post('/video',function(req,res){
-//  console.log(req.body);
-//  cateyes.addToDownloadList(req.body.metadata,req.body.parameter);
-//  res.json({});
-//});
-//
-//app.get('/metadata',function(req,res){
-//  var url = req.query.url;
-//  cateyes.getURLMetadata(url).then(function(data){
-//    res.json(data);
-//  },function(err){
-//    res.send(500,err);
-//  });
-//});
-//
-//app.get('/detail',function(req,res){
-//  var query = req.query;
-//  cateyes.getDetail(query.id).then(function(ret){
-//    if(!ret){
-//      ret = {};
-//    }
-//    res.json(ret);
-//  },function(err){
-//    res.send(500,err);
-//  });
-//})
-//
-//app.get('/video',function(req,res){
-//  var query = req.query;
-//  var con = {};
-//  for(var k in query){
-//    con[k] = query[k];
-//  }
-//  cateyes.getTask(con).then(function(ret){
-//    res.json(ret);
-//  },function(err){
-//    res.send(500,err);
-//  });
-//});
-//
-//app.post('/settings',function(req,res){
-//  console.log(req.body);
-//
-//  res.send(200);
-//});
-
+app.get('/api/albums/:album/:chapter',function(req,res){
+  res.json(resolver.clips(req.params.album,req.params.chapter));
+});
 
 app.listen(8080);
-
-//var server = http.Server(app)
-//var io = require('socket.io').listen(server);
-//
-//server.listen(app.get('port'));
-//
-//io.sockets.on('connection', function (socket) {
-//  socket.emit('news', { hello: 'world' });
-//  socket.on('my other event', function (data) {
-//    console.log(data);
-//  });
-//  socket.on('disconnect',function(){
-//    console.log('disconnect');
-//  });
-//});

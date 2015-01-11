@@ -67,6 +67,22 @@ angular.module("app", [
       instance.close()
 
 
+  getIndex2 = (title)->
+    if !title
+      return 0
+    m = title.match /Season\s+(\d+)\s/
+    if m && m.length
+      return parseInt m[1]
+    return 0
+
+  getIndex = (title)->
+    if !title
+      return 0
+    m = title.match /#(\d+)/
+    if m && m.length
+      return parseInt m[1]
+    0
+
 
   $rootScope.filedata = []
 
@@ -79,12 +95,17 @@ angular.module("app", [
           children : []
           expanded : true
         _.each item.chapters,(chap)->
-          nav.children.push(
+          ch = {
             label : chap.title
             onSelect : playVideo
             path : encodeURIComponent(item.title)+'/'+encodeURIComponent(chap.title)+'/'
             item : chap
-          )
+          }
+          ch.item.clips.sort (a,b)->
+            getIndex(a)-getIndex(b)
+          nav.children.push ch
+        nav.children.sort (a,b)->
+          getIndex2(a.label) - getIndex2(b.label)
         $rootScope.filedata.push nav
   $rootScope.getFiles()
 
