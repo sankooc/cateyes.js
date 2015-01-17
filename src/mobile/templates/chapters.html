@@ -1,0 +1,57 @@
+<ion-view view-title="{{album.title}}">
+  <ion-nav-bar class="bar-positive">
+    <ion-nav-back-button class="button button-icon ion-ios7-arrow-left"></ion-nav-back-button>
+
+    <ion-nav-buttons side="right">
+      <a class="button button-icon icon ion-search"></a>
+    </ion-nav-buttons>
+    <!--<div class="messages">-->
+      <!--<i class="icon ion-ios7-plus-empty pull-right"></i>-->
+    <!--</div>-->
+    <!--<ion-nav-back-button class="button-icon ion-ios7-arrow-left button back-button">-->
+    <!--</ion-nav-back-button>-->
+    <!--<ion-nav-buttons>-->
+      <!--<button class="button button-clear pull-right">-->
+        <!--I'm-->
+      <!--</button>-->
+    <!--</ion-nav-buttons>-->
+    <!--<button class="button button-positive">-->
+      <!--dd-->
+    <!--<i class="icon ion-ios7-telephone"></i>-->
+    <!--</button>-->
+  </ion-nav-bar>
+  <!--<ion-nav-buttons>-->
+    <!--<button class="button button-positive">-->
+      <!--<i class="icon ion-ios7-telephone"></i>-->
+    <!--</button>-->
+    <!--&lt;!&ndash;<button class="button pull-right">&ndash;&gt;-->
+      <!--&lt;!&ndash;I'm&ndash;&gt;-->
+    <!--&lt;!&ndash;</button>&ndash;&gt;-->
+  <!--</ion-nav-buttons>-->
+  <ion-content>
+    <label class="item item-input item-select">
+      <div class="input-label">
+        分类方案
+      </div>
+      <select>
+        <option>Blue</option>
+        <option selected>Green</option>
+        <option>Red</option>
+      </select>
+    </label>
+    <label class="item item-input">
+      <i class="icon ion-search placeholder-icon"></i>
+      <input type="text" placeholder="Search">
+    </label>
+    <div class="item item-divider">
+      Chapters
+    </div>
+    <ion-list>
+      <ion-item ng-repeat="chapter in chapters">
+        <div ui-sref="app.clips({album:name,chapter:chapter})">
+          {{chapter}}
+        </div>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

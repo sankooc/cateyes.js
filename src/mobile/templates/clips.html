@@ -1,0 +1,21 @@
+<ion-view view-title="{{chapter}}">
+  <ion-nav-bar class="bar-positive">
+    <ion-nav-back-button class="button button-icon ion-ios7-arrow-left"></ion-nav-back-button>
+  </ion-nav-bar>
+  <ion-content>
+
+    <ionic-video ng-model="sources" style="display: none;"></ionic-video>
+    <label class="item item-input">
+      <i class="icon ion-search placeholder-icon"></i>
+      <input type="text" placeholder="Search">
+    </label>
+    <div class="item item-divider">
+      Clips
+    </div>
+    <ion-list>
+      <ion-item ng-repeat="clip in clips" ng-click="select($index)">
+        {{clip}}
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

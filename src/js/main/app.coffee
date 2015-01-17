@@ -9,7 +9,7 @@ angular.module("app", [
   "com.2fdevs.videogular.plugins.overlayplay",
   "com.2fdevs.videogular.plugins.poster",
   "com.2fdevs.videogular.plugins.buffering"
-]).run ($rootScope,$modal,$http,videoService,$sce)->
+]).run ($rootScope,$modal,$http,videoService,$sce,$timeout,video)->
   $rootScope.videos = [
       title:'broke girls E03'
       ,prefix:'mega-4'
@@ -130,13 +130,24 @@ angular.module("app", [
       _.each _scope.clips,(clip)->
        source = '/file/'+encodeURIComponent(_scope.album)+'/'+encodeURIComponent(_scope.chapter)+'/'+encodeURIComponent(clip)
        _scope.sources.push source
-      _scope.interface = {}
-      if  _scope.interface.options
-        _scope.interface.options.setAutoplay true
-        _scope.interface.sources.add _scope.sources[0]
-      _scope.$on '$videoReady',()->
-       _scope.interface.options.setAutoplay true
-       _scope.interface.sources.add _scope.sources[0]
+#      _scope.interface = {}
+#      if  _scope.interface.options
+#        _scope.interface.options.setAutoplay true
+#        _scope.interface.sources.add _scope.sources[0]
+#      _scope.$on '$videoReady',()->
+#       _scope.interface.options.setAutoplay true
+#       _scope.interface.sources.add _scope.sources[0]
+       _scope.playlistOpen = false
+       _scope.videos = {
+        first:  'http://www.w3schools.com/html/mov_bbb.mp4'
+        second: 'http://www.w3schools.com/html/movie.mp4'
+        }
+       $timeout ()->
+         video.addSource('mp4', _scope.videos.first)
+#        $timeout(function() {
+#        video.addSource('mp4', $scope.videos.first);
+#      }, 1000);
+
 
     option =
       templateUrl :'player.html'

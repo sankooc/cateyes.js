@@ -12,7 +12,7 @@
   <link href="../vendor/bootstrap-material-design/dist/css/ripples.min.css" rel="stylesheet">
   <link href="../vendor/bootstrap-material-design/dist/css/material-wfont.min.css" rel="stylesheet">
   <link href="../css/default.css" rel="stylesheet">
-  <!--<link href="../vendor/video.js/dist/video-js/video-js.css" rel="stylesheet">-->
+  <link href="../vendor/video.js/dist/video-js/video-js.css" rel="stylesheet">
 </head>
 <body>
 
@@ -25,7 +25,7 @@
 <!--<video class="video-js vjs-default-skin" controls-->
        <!--preload="auto"-->
        <!--data-setup="{}">-->
-  <!--<source src="http://www.w3schools.com/html/movie.mp4" type='video/mp4'>-->
+  <!--&lt;!&ndash;<source src="http://www.w3schools.com/html/movie.mp4" type='video/mp4'>&ndash;&gt;-->
 <!--</video>-->
 <div class="navbar navbar-default">
   <div class="navbar-header">
@@ -46,12 +46,20 @@
 </div>
 
 <div class="container tab-content">
+
   <div role="tabpanel" class="tab-pane fade" id="videos">
     <div class="col-md-12">
       <div class="col-md-4 col-xd-offset-1" ng-repeat=" chapter in chapters">
         <div class="panel panel-default">
           <div class="panel-body shadow-z-4">
-            <a href="javascript:void(0)" ng-click="show(album,chapter)"><img src="http://placehold.sinaapp.com/?120*120" style=" margin-right:15px;float: left"></a>
+            <!--<a href="javascript:void(0)" ng-click="show(album,chapter)"><img src="http://placehold.sinaapp.com/?120*120" style=" margin-right:15px;float: left"></a>-->
+            <div>
+              <video class="video-js vjs-default-skin" controls
+                     preload="metadata"
+                     data-setup="{}" style=" margin-right:15px;float: left">
+                <source src="http://www.w3schools.com/html/movie.mp4" type='video/mp4'>
+              </video>
+            </div>
             <div >
               <h4 ng-bind="chapter"></h4>
               <p class="">video descript</p>
@@ -142,8 +150,9 @@
 <script src="../vendor/bootstrap-material-design/dist/js/ripples.min.js"></script>
 
 
-<script src="../js/ng-video.js"></script>
-<!--<script src="../vendor/video.js/dist/video-js/video.js"></script>-->
+<script src="../vendor/ngvideo/dist/ng-video.js"></script>
+<!--<script src="../js/ng-video.js"></script>-->
+<script src="../vendor/video.js/dist/video-js/video.js"></script>
 <script src="../js/app.js"></script>
 </body>
 </html>

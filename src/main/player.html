@@ -3,13 +3,33 @@
     <button type="button" class="close" ng-click="$close()" aria-hidden="true">×</button>
     <h4 class="modal-title" ng-bind="chapter"></h4>
   </div>
+
+  <link href="../vendor/video.js/dist/video-js/video-js.css" rel="stylesheet">
   <div class="modal-body row">
-    <section class="video" ng-video ng-model="interface">
-      <section vi-controls class="controls">
-        <span ng-click="interface.controls.play()" title="Play" class="glyphicon glyphicon-play"></span>
-        <span ng-click="interface.controls.pause()" title="Pause" class="glyphicon glyphicon-pause"></span>
-      </section>
-    </section>
+    <!--<video class="video-js vjs-default-skin" controls-->
+           <!--preload="auto"-->
+           <!--data-setup="{}">-->
+      <!--<source src="http://www.w3schools.com/html/movie.mp4" type='video/mp4'>-->
+    <!--</video>-->
+    <!--<section class="video" ng-video ng-model="interface">-->
+
+      <!--<video vi-screen></video>-->
+
+      <!--<section vi-controls class="controls">-->
+        <!--<span ng-click="interface.controls.play()" title="Play" class="glyphicon glyphicon-play"></span>-->
+        <!--<span ng-click="interface.controls.pause()" title="Pause" class="glyphicon glyphicon-pause"></span>-->
+      <!--</section>-->
+      <!--<section vi-buffer class="controls"></section>-->
+      <!--&lt;!&ndash;<section vi-volume>&ndash;&gt;-->
+        <!--&lt;!&ndash;<a vi-volume-decrease>Decrease</a>&ndash;&gt;-->
+        <!--&lt;!&ndash;<a vi-volume-increase>Increase</a>&ndash;&gt;-->
+        <!--&lt;!&ndash;<a vi-volume-mute>Mute</a>&ndash;&gt;-->
+        <!--&lt;!&ndash;<a vi-volume-loudest>Loudest</a>&ndash;&gt;-->
+      <!--&lt;!&ndash;</section>&ndash;&gt;-->
+      <!--&lt;!&ndash;<section class="full-screen">&ndash;&gt;-->
+        <!--&lt;!&ndash;<span title="Full Screen" vi-full-screen-toggle class="glyphicon glyphicon-fullscreen"></span>&ndash;&gt;-->
+      <!--&lt;!&ndash;</section>&ndash;&gt;-->
+    <!--</section>-->
   </div>
   <div class="modal-footer">
   </div>
