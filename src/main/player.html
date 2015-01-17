@@ -1,0 +1,16 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="$close()" aria-hidden="true">×</button>
+    <h4 class="modal-title" ng-bind="chapter"></h4>
+  </div>
+  <div class="modal-body row">
+    <section class="video" ng-video ng-model="interface">
+      <section vi-controls class="controls">
+        <span ng-click="interface.controls.play()" title="Play" class="glyphicon glyphicon-play"></span>
+        <span ng-click="interface.controls.pause()" title="Pause" class="glyphicon glyphicon-pause"></span>
+      </section>
+    </section>
+  </div>
+  <div class="modal-footer">
+  </div>
+</div>

@@ -3,6 +3,7 @@ angular.module("app", [
 #  'ui.bootstrap.pagination',
   'angularBootstrapNavTree',
   "ngSanitize",
+  "ngVideo",
   "com.2fdevs.videogular",
   "com.2fdevs.videogular.plugins.controls",
   "com.2fdevs.videogular.plugins.overlayplay",
@@ -83,6 +84,15 @@ angular.module("app", [
       return parseInt m[1]
     0
 
+  $http.get('/api/albums').then (res)->
+    $rootScope.albums = res.data
+
+  $rootScope.select = (album)->
+    $rootScope.album = album
+    $http.get('/api/albums/'+album).then (res)->
+      $rootScope.chapters = res.data;
+      $rootScope.chapters.sort (a,b)->
+       getIndex2(a) - getIndex2(b)
 
   $rootScope.filedata = []
 
@@ -107,7 +117,35 @@ angular.module("app", [
         nav.children.sort (a,b)->
           getIndex2(a.label) - getIndex2(b.label)
         $rootScope.filedata.push nav
-  $rootScope.getFiles()
+
+  $rootScope.show = (album,chapter)->
+    _scope = $rootScope.$new()
+    _scope.album = album
+    _scope.chapter = chapter
+    $http.get('/api/albums/'+_scope.album+'/'+ _scope.chapter).then (res)->
+      _scope.clips = res.data;
+      _scope.clips.sort (a,b)->
+        getIndex(a) - getIndex(b)
+      _scope.sources = []
+      _.each _scope.clips,(clip)->
+       source = '/file/'+encodeURIComponent(_scope.album)+'/'+encodeURIComponent(_scope.chapter)+'/'+encodeURIComponent(clip)
+       _scope.sources.push source
+      _scope.interface = {}
+      if  _scope.interface.options
+        _scope.interface.options.setAutoplay true
+        _scope.interface.sources.add _scope.sources[0]
+      _scope.$on '$videoReady',()->
+       _scope.interface.options.setAutoplay true
+       _scope.interface.sources.add _scope.sources[0]
+
+    option =
+      templateUrl :'player.html'
+      scope:_scope
+      size: 'lg'
+    $modal.open option
+
+
+#  $rootScope.getFiles()
 
 
 
