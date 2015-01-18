@@ -4,12 +4,58 @@ angular.module("app", [
   'angularBootstrapNavTree',
   "ngSanitize",
   "ngVideo",
+  "infinite-scroll",
   "com.2fdevs.videogular",
   "com.2fdevs.videogular.plugins.controls",
   "com.2fdevs.videogular.plugins.overlayplay",
   "com.2fdevs.videogular.plugins.poster",
   "com.2fdevs.videogular.plugins.buffering"
-]).run ($rootScope,$modal,$http,videoService,$sce,$timeout,video)->
+])
+.directive 'videojs', ()->
+  controller = ($scope)->
+
+  linker = (scope, element, attrs)->
+    console.log element[0]
+    setup = {
+      'techOrder' : ['html5', 'flash']
+      'controls' : true
+      'preload' : 'metadata'
+      'autoplay' : false
+      'height' : 500
+      'width' : "100%"
+    }
+
+    scope.select = (index)->
+      if !scope.sources || !scope.sources.length || scope.sources.length <= index
+        return
+      scope.index = index;
+      list = element.find('.list-group>.list-group-item')
+      list.removeClass 'selected'
+      target = $ list.get(scope.index)
+      target.addClass 'selected'
+      scope.player.src scope.sources[scope.index].url
+      scope.player.load()
+      scope.player.play()
+    scope.$watch 'sources',(sources)->
+      if !sources || !sources.length
+        return
+      scope.select 0
+    videojs element.find('video')[0], setup,()->
+      scope.player = this;
+      this.on 'ended',()->
+        scope.select(++scope.index)
+
+
+  {
+  restrict : 'E'
+  templateUrl : '_player.html'
+  replace : true
+  controller : controller
+  link : linker
+
+  }
+
+.run ($rootScope,$modal,$http,videoService,$sce,$timeout,video)->
   $rootScope.videos = [
       title:'broke girls E03'
       ,prefix:'mega-4'
@@ -86,13 +132,26 @@ angular.module("app", [
 
   $http.get('/api/albums').then (res)->
     $rootScope.albums = res.data
+  perpage = 15
+  $rootScope._chapters = []
+  $rootScope.chapters = []
+  $rootScope.hasMore = ()->
+    $rootScope.chapters.length <= $rootScope._chapters.length
+  $rootScope.load = ()->
+    _start = $rootScope._chapters.length
+    _end = Math.min $rootScope.chapters.length,$rootScope._chapters.length+perpage
+    cap = $rootScope.chapters.slice _start,_end
+    _.each cap,(c)->
+      $rootScope._chapters.push c
 
   $rootScope.select = (album)->
     $rootScope.album = album
+    $rootScope._chapters = []
     $http.get('/api/albums/'+album).then (res)->
-      $rootScope.chapters = res.data;
+      $rootScope.chapters = res.data
       $rootScope.chapters.sort (a,b)->
        getIndex2(a) - getIndex2(b)
+      $rootScope.load()
 
   $rootScope.filedata = []
 
@@ -129,7 +188,10 @@ angular.module("app", [
       _scope.sources = []
       _.each _scope.clips,(clip)->
        source = '/file/'+encodeURIComponent(_scope.album)+'/'+encodeURIComponent(_scope.chapter)+'/'+encodeURIComponent(clip)
-       _scope.sources.push source
+       _scope.sources.push {
+         url : source
+         title : clip
+       }
 #      _scope.interface = {}
 #      if  _scope.interface.options
 #        _scope.interface.options.setAutoplay true
@@ -137,18 +199,6 @@ angular.module("app", [
 #      _scope.$on '$videoReady',()->
 #       _scope.interface.options.setAutoplay true
 #       _scope.interface.sources.add _scope.sources[0]
-       _scope.playlistOpen = false
-       _scope.videos = {
-        first:  'http://www.w3schools.com/html/mov_bbb.mp4'
-        second: 'http://www.w3schools.com/html/movie.mp4'
-        }
-       $timeout ()->
-         video.addSource('mp4', _scope.videos.first)
-#        $timeout(function() {
-#        video.addSource('mp4', $scope.videos.first);
-#      }, 1000);
-
-
     option =
       templateUrl :'player.html'
       scope:_scope
