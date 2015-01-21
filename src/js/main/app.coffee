@@ -144,13 +144,16 @@ angular.module("app", [
     _.each cap,(c)->
       $rootScope._chapters.push c
 
+  $rootScope.thumb = (chapter)->
+    '/file/'+encodeURIComponent($rootScope.album)+'/'+encodeURIComponent(chapter)+'/icon.jpg'
+
   $rootScope.select = (album)->
     $rootScope.album = album
     $rootScope._chapters = []
     $http.get('/api/albums/'+album).then (res)->
       $rootScope.chapters = res.data
       $rootScope.chapters.sort (a,b)->
-       getIndex2(a) - getIndex2(b)
+        getIndex2(b) - getIndex2(a)
       $rootScope.load()
 
   $rootScope.filedata = []

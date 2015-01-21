@@ -51,10 +51,10 @@
 
   <div role="tabpanel" class="tab-pane fade" id="videos">
     <div class="col-md-12" infinite-scroll="load()" infinite-scroll-disabled="hasMore()" infinite-scroll-distance="1">
-      <div class="col-md-4 col-xd-offset-1" ng-repeat=" chapter in _chapters">
+      <div class="col-md-4 col-xs-12 col-xd-offset-1" ng-repeat=" chapter in _chapters">
         <div class="panel panel-default">
           <div class="panel-body">
-            <a href="javascript:void(0)" ng-click="show(album,chapter)"><img src="http://placehold.sinaapp.com/?120*120" style=" margin-right:15px;float: left"></a>
+            <a href="javascript:void(0)" ng-click="show(album,chapter)"><img ng-src="{{thumb(chapter)}}" style="width: 50%;margin-right:15px;float: left"></a>
             <div >
               <h4 ng-bind="chapter"></h4>
               <p class="">video descript</p>
