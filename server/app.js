@@ -10,9 +10,9 @@ var app = express();
 var Resolve = require('./resolve/FileResolver');
 
 // var homeRoot = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/Movies/Cateyes/';
-var homeRoot= "/Volumes/mok/"
 
 var resolver = new Resolve();
+var homeRoot= resolver.root;
 app.set('port', process.env.PORT || 8001);
 //app.use(express.logger('dev'));
 app.use(express.json());

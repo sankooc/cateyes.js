@@ -10,7 +10,8 @@ var $ = require('jquery')
     ,uuid = require('node-uuid')
     ,async = require('async')
 
-exports.download = download
+exports.download = download;
+exports.batchDownload = batchDownload;
 
 function download(context,callback){
     var url = context.url
@@ -38,7 +39,7 @@ function batchDownload(urls,callback){
     async.eachLimit(urls,1, function(_url, callback) {
         var context = {
             url:_url
-        }
+        };
         async.waterfall([
             async.apply(cateyes.getURLMetadata,context)
             ,function(metadata,callback){

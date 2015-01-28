@@ -27,6 +27,9 @@ if (!String.prototype.startsWith) {
   });
 }
 
+// var ROOT = "/Users/sankooc/Movies/Cateyes/";
+var ROOT = "/Volumes/mok/";
+
 function readSuffix(path,dir,suffix){
   var list = fs.readdirSync(path);
   var result = [];
@@ -55,7 +58,8 @@ function readList(path,dir){
 }
 
 function FileResolver(){
-  this.root = "/Volumes/mok/";
+  // this.root = "/Volumes/mok/";
+  this.root = ROOT;
 }
 
 FileResolver.prototype.albums = function(){
