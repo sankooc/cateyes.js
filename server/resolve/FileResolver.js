@@ -27,8 +27,8 @@ if (!String.prototype.startsWith) {
   });
 }
 
-// var ROOT = "/Users/sankooc/Movies/Cateyes/";
-var ROOT = "/Volumes/mok/";
+var ROOT = "/Users/sankooc/Movies/Cateyes/";
+//var ROOT = "/Volumes/mok/";
 
 function readSuffix(path,dir,suffix){
   var list = fs.readdirSync(path);
@@ -72,6 +72,22 @@ FileResolver.prototype.chapters = function(album){
 
 FileResolver.prototype.clips = function(album,chapter){
   return readList(this.root+album+'/'+chapter+'/',false);
+};
+
+FileResolver.prototype.metadata = function(album,chapter){
+  var list = readList(this.root+album+'/'+chapter+'/',false);
+  var titles = []
+  if(list && list.length){
+    for(var i = 0;i<list.length;i++){
+      var meta = parse_title(list[i],chapter);
+      if(meta.title){
+        if(titles.indexOf(meta.title) < 0){
+          titles.push(meta.title)
+        }
+      }
+    }
+  }
+  return titles;
 };
 
 FileResolver.prototype.parse = function(callback){
