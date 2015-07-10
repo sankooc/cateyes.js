@@ -4,10 +4,7 @@
     <h4 class="modal-title" ng-bind="chapter"></h4>
   </div>
   <div class="modal-body">
-    <videojs></videojs>
-    <!--<video videojs class="video-js vjs-default-skin vjs-controls-enabled vjs-has-started vjs-paused vjs-user-inactive" ng-model="video">-->
-      <!--&lt;!&ndash;<source src="http://www.w3schools.com/html/movie.mp4" type='video/mp4'>&ndash;&gt;-->
-    <!--</video>-->
+    <videojs sources="sources" oncomplete="toNext()"></videojs>
   </div>
   <div class="modal-footer">
   </div>

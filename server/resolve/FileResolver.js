@@ -2,6 +2,7 @@
  * Created by sankooc on 1/1/15.
  */
 var fs = require('fs');
+var _config = require('../config/config.js');
 if (!String.prototype.endsWith) {
   Object.defineProperty(String.prototype, 'endsWith', {
     value: function(searchString, position) {
@@ -26,9 +27,6 @@ if (!String.prototype.startsWith) {
     }
   });
 }
-
-var ROOT = "/Users/sankooc/Movies/Cateyes/";
-//var ROOT = "/Volumes/mok/";
 
 function readSuffix(path,dir,suffix){
   var list = fs.readdirSync(path);
@@ -58,8 +56,7 @@ function readList(path,dir){
 }
 
 function FileResolver(){
-  // this.root = "/Volumes/mok/";
-  this.root = ROOT;
+  this.root = _config.root;
 }
 
 FileResolver.prototype.albums = function(){

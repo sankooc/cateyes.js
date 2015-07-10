@@ -14,15 +14,7 @@ module.exports = function (grunt) {
   ];
   // Project configuration.
   grunt.initConfig({
-      // Metadata.
-      pkg: grunt.file.readJSON('package.json'),
-      banner: '/*! <%= pkg.name %> - v<%= pkg.version %>\n'
-      //,clean: {
-      //  build: {
-      //    src: ['asset/']
-      //  }
-      //}
-      ,copy: {
+      copy: {
         main: {
           files: [
             {
@@ -69,23 +61,19 @@ module.exports = function (grunt) {
 
         }
       }
-      ,'http-server':{
+      ,nodemon: {
         dev: {
-            // the server root directory
-            root: 'asset/',
-            port: 8001,
-            // port: function() { return 8282; }
-            host: "127.0.0.1",
-            cache: 1000,
-            showDir : true,
-            autoIndex: true,
-            // server default file extension
-            ext: "html",
-            // run in parallel with other tasks
-            runInBackground: true
+          script: 'server/app.js'
         }
-
-    }
+      }
+      ,concurrent: {
+        dev: {
+          tasks: ['nodemon', 'watch'],
+          options: {
+            logConcurrentOutput: true
+          }
+        }
+      }
       ,watch: {
         html : {
           files:['src/mobile/**','src/main/**'],
@@ -114,8 +102,13 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-concat-sourcemap');
   grunt.loadNpmTasks('grunt-contrib-coffee');
-  grunt.loadNpmTasks('grunt-http-server');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.registerTask('default', ['copy','less','concat_sourcemap','coffee','watch']);
+  grunt.loadNpmTasks('grunt-nodemon');
+  grunt.loadNpmTasks('grunt-concurrent');
+
+  //grunt.loadNpmTasks('grunt-contrib-connect');
+  //grunt.loadNpmTasks('grunt-connect-proxy');
+  //grunt.loadNpmTasks('grunt-exec');
+  grunt.registerTask('default', ['copy','less','concat_sourcemap','coffee','concurrent']);
 }
 ;

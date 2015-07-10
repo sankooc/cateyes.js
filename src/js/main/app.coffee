@@ -19,7 +19,10 @@ angular.module("app", [
     }
 
     scope.select = (index)->
-      if !scope.sources || !scope.sources.length || scope.sources.length <= index
+      if !scope.sources || !scope.sources.length
+        return
+      if scope.sources.length <= index
+        scope.oncomplete({})
         return
       scope.index = index;
       list = element.find('.list-group>.list-group-item')
@@ -38,15 +41,14 @@ angular.module("app", [
       this.on 'ended',()->
         scope.select(++scope.index)
 
-
-  {
   restrict : 'E'
   templateUrl : '_player.html'
   replace : true
   controller : controller
   link : linker
-
-  }
+  scope : 
+    sources : '='
+    oncomplete : '&'
 
 .run ($rootScope,$modal,$http,videoService,$sce,$timeout,video)->
   $rootScope.videos = [
@@ -177,18 +179,27 @@ angular.module("app", [
     _scope = $rootScope.$new()
     _scope.album = album
     _scope.chapter = chapter
-    $http.get('/api/albums/'+_scope.album+'/'+ _scope.chapter).then (res)->
-      _scope.clips = res.data;
-      _scope.clips.sort (a,b)->
-        getIndex(a) - getIndex(b)
-      _scope.sources = []
-      _.each _scope.clips,(clip)->
-       source = '/file/'+encodeURIComponent(_scope.album)+'/'+encodeURIComponent(_scope.chapter)+'/'+encodeURIComponent(clip)
-       _scope.sources.push {
-         url : source
-         title : clip
-       }
+    createSource = ()->
+      $http.get('/api/albums/'+_scope.album+'/'+ _scope.chapter).then (res)->
+        _scope.clips = res.data;
+        _scope.clips.sort (a,b)->
+          getIndex(a) - getIndex(b)
+        _scope.sources = []
+        _.each _scope.clips,(clip)->
+         source = '/file/'+encodeURIComponent(_scope.album)+'/'+encodeURIComponent(_scope.chapter)+'/'+encodeURIComponent(clip)
+         _scope.sources.push 
+           url : source
+           title : clip
+    createSource()
+    
 
+    _scope.toNext = ()->
+      index = $rootScope.chapters.indexOf _scope.chapter
+      if ++index >= $rootScope.chapters.length
+        return
+      console.log index
+      _scope.chapter = $rootScope.chapters[index]
+      createSource()
     option =
       templateUrl :'player.html'
       scope:_scope
